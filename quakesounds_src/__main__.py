@@ -32,7 +32,7 @@ RES_PATH = "res"
 DEFAULT_CFG = "default.cfg"
 CFG_FILE = "quakesounds.cfg"
 
-INTERNAL_PATH_TOKEN = re.compile("%QS_INTERNAL%(\S+)")
+UTILITY_PATH_TOKEN = re.compile("%UTILITY_PATH%(\S+)")
 
 
 # Find the app's home dir; be bulletproof against a few different ways of
@@ -65,7 +65,7 @@ def out_fd_if_not_exist(path):
         os.close(out_fd)
 
 def create_config_file(cfg_path, resource_dir):
-    def fallback_path(match):
+    def utility_path(match):
         resource = match.group(1)
         exe_name = os.path.join(resource_dir, resource + "_exename.txt")
         if os.path.exists(exe_name):
@@ -79,7 +79,7 @@ def create_config_file(cfg_path, resource_dir):
     try:
         with open(os.path.join(resource_dir, DEFAULT_CFG), 'r') as instream:
             default_cfg = instream.read()
-            cfg = INTERNAL_PATH_TOKEN.sub(fallback_path, default_cfg)
+            cfg = UTILITY_PATH_TOKEN.sub(utility_path, default_cfg)
             with out_fd_if_not_exist(cfg_path) as out_fd:
                 os.write(out_fd, cfg)
     except OSError as e:
