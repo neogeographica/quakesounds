@@ -1,5 +1,8 @@
 .PHONY: default all clean superclean
 
+bundle_expak := true
+bundle_pkg_resources := true
+
 unar := unar -q
 zip := zip -q
 curl := curl
@@ -95,6 +98,8 @@ build/%/quakesounds.py: $$(%_utils) $(sources)
 	@rm -rf build/$*
 	@mkdir -p build/$*
 	@cp -r quakesounds_src build/$*/
+	@if $(bundle_expak); then cp bundled_modules/expak.py build/$*/quakesounds_src/; fi
+	@if $(bundle_pkg_resources); then cp bundled_modules/pkg_resources.py build/$*/quakesounds_src/; fi
 	@-cp util/$*/* build/$*/quakesounds_src/res/
 	@cd build/$*/quakesounds_src; $(zip) -r ../quakesounds.zip *
 	@echo '#!/usr/bin/env python' | cat - build/$*/quakesounds.zip > build/$*/quakesounds.py
