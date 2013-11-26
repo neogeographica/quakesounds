@@ -61,6 +61,19 @@ def set_working_dir(settings):
 def printable_command_stage(command_stage):
     return " ".join([a.strip() for a in command_stage.split(",")])
 
+def valid_command_stage_args(stage_args):
+    if not stage_args:
+        sys.stderr.write("\nError: converter command stage is empty\n")
+        return False
+    if not stage_args[0]:
+        sys.stderr.write("\nError: first element of converter command stage is empty\n")
+        return False
+    if stage_args[0] == "%write_to%":
+        if len(stage_args) != 2:
+            sys.stderr.write("\nError: %write_to% command takes one argument\n")
+            return False
+    return True
+
 def writer_func(instream, outpath):
     with open(outpath, 'wb') as outstream:
         outstream.write(instream.read())
@@ -83,13 +96,9 @@ def make_converter(settings):
             stage_args = settings.eval_list_finalize(command_stages[stage],
                                                      {'sound_name': sound_name,
                                                       'write_to': "%write_to%"})
-            if not stage_args:
-                sys.stderr.write("\nError: empty converter command stage\n")
+            if not valid_command_stage_args(stage_args):
                 sys.exit(1)
             if stage_args[0] == "%write_to%":
-                if len(stage_args) != 2:
-                    sys.stderr.write("\nError: %write_to% command takes one argument\n")
-                    sys.exit(1)
                 passthru_filename = stage_args[1]
                 break
             stage_stdin = p_chain[-1].stdout if p_chain else subprocess.PIPE
@@ -132,7 +141,7 @@ def go(settings, file_table):
     set_verbosity(settings)
     verbose_print("")
     pak_paths = settings.eval_list('pak_paths')
-    abs_pak_paths = [os.path.abspath(p) for p in pak_paths]
+    abs_pak_paths = [os.path.abspath(p) for p in pak_paths if p]
     set_working_dir(settings)
     converter = make_converter(settings)
     for path in abs_pak_paths:

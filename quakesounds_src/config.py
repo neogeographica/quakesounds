@@ -108,8 +108,7 @@ class Settings:
         return self.sub_table_tokens(total_table, value, None)
     def eval_list_finalize(self, value, var_table=None):
         new_value = value.split(",")
-        list_value = [self.eval_finalize(e, var_table).strip() for e in new_value]
-        return [l for l in list_value if l]
+        return [self.eval_finalize(e, var_table).strip() for e in new_value]
     def eval(self, key, var_table=None):
         prep_value = self.eval_prep_cfg(key, var_table)
         return self.eval_finalize(prep_value, var_table)
