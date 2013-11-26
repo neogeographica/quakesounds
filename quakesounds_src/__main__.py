@@ -166,6 +166,7 @@ def main(argv):
 
 try:
     sys.exit(main(sys.argv[1:]))
-except config.BadSetting as e:
-    sys.stderr.write(str(e) + "\n")
+except (config.BadSetting, config.TooManySubstitutions) as e:
+    sys.stderr.write("\nError: " + str(e) + "\n")
     sys.exit(1)
+
