@@ -22,6 +22,7 @@ import subprocess
 import sys
 import os
 import errno
+import threading
 
 verbose = False
 
@@ -60,37 +61,70 @@ def set_working_dir(settings):
 def printable_command_stage(command_stage):
     return " ".join([a.strip() for a in command_stage.split(",")])
 
+def writer_func(instream, outpath):
+    with open(outpath, 'wb') as outstream:
+        outstream.write(instream.read())
+
 def make_converter(settings):
-    command = settings.eval_prep_cfg('converter', ['base_name'])
+    command = settings.eval_prep_cfg('converter', ['sound_name', 'write_to'])
     command_stages = [s.strip() for s in command.split("|")]
     num_stages = len(command_stages)
     for stage in range(num_stages):
         verbose_print("converter stage %d of %d:" % (stage + 1, num_stages))
         verbose_print("    %s" % printable_command_stage(command_stages[stage]))
-    def converter(orig_data, base_name):
-        verbose_print("   creating %s", base_name)
-        out_dir = os.path.dirname(base_name)
+    def converter(orig_data, sound_name):
+        verbose_print("   creating %s", sound_name)
+        out_dir = os.path.dirname(sound_name)
         if out_dir:
             ensure_dir(out_dir)
+        passthru_filename = None
         p_chain = []
         for stage in range(num_stages):
             stage_args = settings.eval_list_finalize(command_stages[stage],
-                                                     {'base_name': base_name})
+                                                     {'sound_name': sound_name,
+                                                      'write_to': "%write_to%"})
+            if not stage_args:
+                sys.stderr.write("\nError: empty converter command stage\n")
+                sys.exit(1)
+            if stage_args[0] == "%write_to%":
+                if len(stage_args) != 2:
+                    sys.stderr.write("\nError: %write_to% command takes one argument\n")
+                    sys.exit(1)
+                passthru_filename = stage_args[1]
+                break
             stage_stdin = p_chain[-1].stdout if p_chain else subprocess.PIPE
             stage_stdout = subprocess.PIPE if (stage + 1 < num_stages) else None
             p = subprocess.Popen(stage_args, stdin=stage_stdin, stdout=stage_stdout)
             p_chain.append(p)
-        # We don't need the file objects that were created to wrap the stdout
-        # file descriptors of the non-terminal stages of the chain, so go ahead
-        # and close them now.
-        for p in p_chain[:-1]:
-            p.stdout.close()
-        # Pump the sound data into the first stage of the chain and flush it.
-        p_chain[0].stdin.write(orig_data)
-        p_chain[0].stdin.close()
-        # Wait for the last stage in the chain to finish before we leave and
-        # garbage-collect objects.
-        p_chain[-1].wait()
+        if p_chain:
+            # Launch the writer thread if needed.
+            writer_thread = None
+            if passthru_filename:
+                writer_thread = threading.Thread(target=writer_func,
+                                                 args=(p_chain[-1].stdout,
+                                                       passthru_filename))
+                writer_thread.start()
+            # We don't need the file objects that were created to wrap the
+            # stdout file descriptors of the non-terminal stages of the chain,
+            # so go ahead and close them now. We don't close the last one
+            # because it is either None, or used by the writer thread.
+            for p in p_chain[:-1]:
+                p.stdout.close()
+            # Pump the sound data into the first stage of the chain and flush.
+            p_chain[0].stdin.write(orig_data)
+            p_chain[0].stdin.close()
+            # Wait for the last stage in the chain to finish before we leave and
+            # garbage-collect objects.
+            if writer_thread:
+                writer_thread.join()
+            else:
+                p_chain[-1].wait()
+        else:
+            # As things stand passthru_filename should always be set here, but
+            # we might as well be robust against future weirdness.
+            if passthru_filename:
+                with open(passthru_filename, 'wb') as outstream:
+                    outstream.write(orig_data)
         return True
     return converter
 
