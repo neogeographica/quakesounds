@@ -67,7 +67,6 @@ def make_converter(settings):
     for stage in range(num_stages):
         verbose_print("converter stage %d of %d:" % (stage + 1, num_stages))
         verbose_print("    %s" % printable_command_stage(command_stages[stage]))
-    command_stages = [settings.eval_prep_paths(c) for c in command_stages]
     def converter(orig_data, base_name):
         verbose_print("   creating %s", base_name)
         out_dir = os.path.dirname(base_name)

@@ -70,27 +70,20 @@ class BadSetting(Exception):
 
 class Settings:
     def __init__(self, cfg_table, path_table):
-        self.special_table = {'base_name': None, 'percent': "%", 'comma': ","}
-        self.path_table = path_table.copy()
-        self.protect_tokens(self.path_table, self.special_table)
         self.cfg_table = cfg_table.copy()
-        self.protect_tokens(self.cfg_table, self.path_table)
+        self.finalize_table = {'base_name': None, 'percent': "%", 'comma': ","}
+        self.finalize_table.update(path_table)
+        for token_name in self.finalize_table:
+            self.cfg_table[token_name] = "%" + token_name + "%"
         self.token_re = re.compile("%([^%]+)%")
-        special_token_name = "|".join(t for t in self.special_table)
-        self.special_token_re = re.compile("%(" + special_token_name + ")%")
-    @staticmethod
-    def protect_tokens(table, token_names):
-        for name in token_names:
-            table[name] = "%" + name + "%"
-    @staticmethod
-    def sub_table_tokens(table, token_re, value):
+    def sub_table_tokens(self, table, value):
         try:
-            new_value = token_re.sub(lambda m: table[m.group(1)], value)
+            new_value = self.token_re.sub(lambda m: table[m.group(1)], value)
         except KeyError as badkey:
             raise BadSetting(badkey)
         return new_value
     def sub_cfg_tokens(self, key, value, iter=0):
-        new_value = self.sub_table_tokens(self.cfg_table, self.token_re, value)
+        new_value = self.sub_table_tokens(self.cfg_table, value)
         if new_value == value:
             return new_value
         if iter >= MAX_SUBSTITUTION_DEPTH:
@@ -102,24 +95,19 @@ class Settings:
         except KeyError as badkey:
             raise BadSetting(badkey)
         return self.sub_cfg_tokens(key, value)
-    def eval_prep_paths(self, value):
-        return self.sub_table_tokens(self.path_table, self.token_re, value)
     def eval_finalize(self, value, base_name=None):
         if base_name is None:
-            self.special_table.pop('base_name', None)
+            self.finalize_table.pop('base_name', None)
         else:
-            self.special_table['base_name'] = base_name
-        return self.sub_table_tokens(self.special_table, self.special_token_re,
-                                     value)
+            self.finalize_table['base_name'] = base_name
+        return self.sub_table_tokens(self.finalize_table, value)
     def eval_list_finalize(self, value, base_name=None):
         new_value = value.split(",")
         return [self.eval_finalize(e, base_name).strip() for e in new_value]
     def eval(self, key, base_name=None):
-        value = self.eval_prep_paths(self.eval_prep_cfg(key))
-        return self.eval_finalize(value, base_name)
+        return self.eval_finalize(self.eval_prep_cfg(key), base_name)
     def eval_list(self, key, base_name=None):
-        value = self.eval_prep_paths(self.eval_prep_cfg(key))
-        return self.eval_list_finalize(value, base_name)
+        return self.eval_list_finalize(self.eval_prep_cfg(key), base_name)
     def is_defined(self, key):
         return key in self.cfg_table
 
