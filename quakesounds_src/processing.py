@@ -61,7 +61,7 @@ def printable_command_stage(command_stage):
     return " ".join([a.strip() for a in command_stage.split(",")])
 
 def make_converter(settings):
-    command = settings.eval_prep_cfg('converter')
+    command = settings.eval_prep_cfg('converter', ['base_name'])
     command_stages = [s.strip() for s in command.split("|")]
     num_stages = len(command_stages)
     for stage in range(num_stages):
@@ -75,7 +75,7 @@ def make_converter(settings):
         p_chain = []
         for stage in range(num_stages):
             stage_args = settings.eval_list_finalize(command_stages[stage],
-                                                     base_name)
+                                                     {'base_name': base_name})
             stage_stdin = p_chain[-1].stdout if p_chain else subprocess.PIPE
             stage_stdout = subprocess.PIPE if (stage + 1 < num_stages) else None
             p = subprocess.Popen(stage_args, stdin=stage_stdin, stdout=stage_stdout)

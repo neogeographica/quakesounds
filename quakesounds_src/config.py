@@ -19,6 +19,7 @@
 
 import re
 
+TOKEN_RE = re.compile("%([^%]+)%")
 MAX_SUBSTITUTION_DEPTH = 16
 
 
@@ -56,7 +57,7 @@ class TooManySubstitutions(Exception):
     def __init__(self, key):
         self.key = key
     def __str__(self):
-        return ("evaluation of setting %s "
+        return ("evaluation of setting '%s' "
                 "has gone through %d token substitution passes "
                 "without completely resolving" %
                 (self.key, MAX_SUBSTITUTION_DEPTH))
@@ -65,49 +66,55 @@ class BadSetting(Exception):
     def __init__(self, key):
         self.key = key
     def __str__(self):
-        return ("setting %s is undefined or used in an illegal context" %
+        return ("setting '%s' is undefined or used in an illegal context" %
                 self.key)
 
 class Settings:
-    def __init__(self, cfg_table, path_table):
+    def __init__(self, cfg_table, finalize_table):
         self.cfg_table = cfg_table.copy()
-        self.finalize_table = {'base_name': None, 'percent': "%", 'comma': ","}
-        self.finalize_table.update(path_table)
+        self.finalize_table = {'percent': "%", 'comma': ","}
+        self.finalize_table.update(finalize_table)
         for token_name in self.finalize_table:
             self.cfg_table[token_name] = "%" + token_name + "%"
-        self.token_re = re.compile("%([^%]+)%")
-    def sub_table_tokens(self, table, value):
-        try:
-            new_value = self.token_re.sub(lambda m: table[m.group(1)], value)
-        except KeyError as badkey:
-            raise BadSetting(badkey)
-        return new_value
-    def sub_cfg_tokens(self, key, value, iter=0):
-        new_value = self.sub_table_tokens(self.cfg_table, value)
+    @staticmethod
+    def sub_table_tokens(table, value, skip_names):
+        def token_lookup(match):
+            token_name = match.group(1)
+            if skip_names and token_name in skip_names:
+                return "%" + token_name + "%"
+            if token_name in table:
+                return table[token_name]
+            raise BadSetting(token_name)
+        return TOKEN_RE.sub(token_lookup, value)
+    def sub_cfg_tokens(self, key, value, skip_names, iter=0):
+        new_value = self.sub_table_tokens(self.cfg_table, value, skip_names)
         if new_value == value:
             return new_value
         if iter >= MAX_SUBSTITUTION_DEPTH:
             raise TooManySubstitutions(key)
-        return self.sub_cfg_tokens(key, new_value, iter + 1)
-    def eval_prep_cfg(self, key):
+        return self.sub_cfg_tokens(key, new_value, skip_names, iter + 1)
+    def eval_prep_cfg(self, key, skip_names=None):
         try:
             value = self.cfg_table[key]
         except KeyError as badkey:
             raise BadSetting(badkey)
-        return self.sub_cfg_tokens(key, value)
-    def eval_finalize(self, value, base_name=None):
-        if base_name is None:
-            self.finalize_table.pop('base_name', None)
+        return self.sub_cfg_tokens(key, value, skip_names)
+    def eval_finalize(self, value, var_table=None):
+        if var_table:
+            total_table = self.finalize_table.copy()
+            total_table.update(var_table)
         else:
-            self.finalize_table['base_name'] = base_name
-        return self.sub_table_tokens(self.finalize_table, value)
-    def eval_list_finalize(self, value, base_name=None):
+            total_table = self.finalize_table
+        return self.sub_table_tokens(total_table, value, None)
+    def eval_list_finalize(self, value, var_table=None):
         new_value = value.split(",")
-        return [self.eval_finalize(e, base_name).strip() for e in new_value]
-    def eval(self, key, base_name=None):
-        return self.eval_finalize(self.eval_prep_cfg(key), base_name)
-    def eval_list(self, key, base_name=None):
-        return self.eval_list_finalize(self.eval_prep_cfg(key), base_name)
+        return [self.eval_finalize(e, var_table).strip() for e in new_value]
+    def eval(self, key, var_table=None):
+        prep_value = self.eval_prep_cfg(key, var_table)
+        return self.eval_finalize(prep_value, var_table)
+    def eval_list(self, key, var_table=None):
+        prep_value = self.eval_prep_cfg(key, var_table)
+        return self.eval_list_finalize(prep_value, var_table)
     def is_defined(self, key):
         return key in self.cfg_table
 
