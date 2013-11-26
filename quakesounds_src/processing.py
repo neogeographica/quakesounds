@@ -58,20 +58,19 @@ def set_working_dir(settings):
             os.chdir(out_working_dir)
             verbose_print("converter working dir is %s", out_working_dir)
 
-def printable_command_stage(command_stage):
-    return " ".join([a.strip() for a in command_stage.split(",")])
-
-def valid_command_stage_args(stage_args):
+def valid_command_stage(stage_args, is_last_stage):
     if not stage_args:
-        sys.stderr.write("\nError: converter command stage is empty\n")
+        sys.stderr.write("    Error: converter command stage is empty\n")
         return False
     if not stage_args[0]:
-        sys.stderr.write("\nError: first element of converter command stage is empty\n")
+        sys.stderr.write("    Error: first element of converter command stage is empty\n")
         return False
     if stage_args[0] == "%write_to%":
         if len(stage_args) != 2:
-            sys.stderr.write("\nError: %write_to% command takes one argument\n")
+            sys.stderr.write("    Error: %write_to% command takes one argument\n")
             return False
+        if not is_last_stage:
+            sys.stderr.write("    Warning: the rest of this stage after the %write_to% command will be ignored\n")
     return True
 
 def writer_func(instream, outpath):
@@ -79,25 +78,27 @@ def writer_func(instream, outpath):
         outstream.write(instream.read())
 
 def make_converter(settings):
-    command = settings.eval_prep_cfg('converter', ['sound_name', 'write_to'])
-    command_stages = [s.strip() for s in command.split("|")]
+    command = settings.eval_prep('converter', ['sound_name', 'write_to'])
+    command_stages = [[a.strip() for a in s.split(",")]
+                      for s in command.split("|")]
     num_stages = len(command_stages)
     for stage in range(num_stages):
         verbose_print("converter stage %d of %d:" % (stage + 1, num_stages))
-        verbose_print("    %s" % printable_command_stage(command_stages[stage]))
+        stage_args = command_stages[stage]
+        verbose_print("    %s" % " ".join(stage_args))
+        if not valid_command_stage(stage_args, stage == num_stages - 1):
+            sys.exit(1)
     def converter(orig_data, sound_name):
         verbose_print("   creating %s", sound_name)
         out_dir = os.path.dirname(sound_name)
         if out_dir:
             ensure_dir(out_dir)
+        var_table = {'sound_name': sound_name, 'write_to': "%write_to%"}
         passthru_filename = None
         p_chain = []
         for stage in range(num_stages):
-            stage_args = settings.eval_list_finalize(command_stages[stage],
-                                                     {'sound_name': sound_name,
-                                                      'write_to': "%write_to%"})
-            if not valid_command_stage_args(stage_args):
-                sys.exit(1)
+            stage_args = [settings.eval_finalize(a, var_table)
+                          for a in command_stages[stage]]
             if stage_args[0] == "%write_to%":
                 passthru_filename = stage_args[1]
                 break
@@ -140,7 +141,8 @@ def make_converter(settings):
 def go(settings, file_table):
     set_verbosity(settings)
     verbose_print("")
-    pak_paths = settings.eval_list('pak_paths')
+    pak_paths_prep = settings.eval_prep('pak_paths').split(",")
+    pak_paths = [settings.eval_finalize(p.strip()) for p in pak_paths_prep]
     abs_pak_paths = [os.path.abspath(p) for p in pak_paths if p]
     set_working_dir(settings)
     converter = make_converter(settings)

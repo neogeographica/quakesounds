@@ -93,7 +93,7 @@ class Settings:
         if iter >= MAX_SUBSTITUTION_DEPTH:
             raise TooManySubstitutions(key)
         return self.sub_cfg_tokens(key, new_value, skip_names, iter + 1)
-    def eval_prep_cfg(self, key, skip_names=None):
+    def eval_prep(self, key, skip_names=None):
         try:
             value = self.cfg_table[key]
         except KeyError as badkey:
@@ -106,15 +106,9 @@ class Settings:
         else:
             total_table = self.finalize_table
         return self.sub_table_tokens(total_table, value, None)
-    def eval_list_finalize(self, value, var_table=None):
-        new_value = value.split(",")
-        return [self.eval_finalize(e, var_table).strip() for e in new_value]
     def eval(self, key, var_table=None):
-        prep_value = self.eval_prep_cfg(key, var_table)
+        prep_value = self.eval_prep(key, var_table)
         return self.eval_finalize(prep_value, var_table)
-    def eval_list(self, key, var_table=None):
-        prep_value = self.eval_prep_cfg(key, var_table)
-        return self.eval_list_finalize(prep_value, var_table)
     def is_defined(self, key):
         return key in self.cfg_table
 
