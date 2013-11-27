@@ -17,31 +17,25 @@
 # You should have received a copy of the GNU General Public License
 # along with quakesounds.  If not, see <http://www.gnu.org/licenses/>.
 
-import expak
 import subprocess
 import sys
 import os
 import errno
 import threading
+from util import verbose_print
 
-verbose = False
+saved_sys_path = sys.path
+sys.path = sys.path[1:]
+try:
+    import expak
+    sys.path = saved_sys_path
+    expak_source = "system"
+except ImportError:
+    sys.path = saved_sys_path
+    import expak
+    expak_source = "bundled"
+expak_version = expak.__version__
 
-
-def verbose_print(format_str, args=None):
-    if verbose:
-        if args:
-            print(format_str % args)
-        else:
-            print(format_str)
-
-def set_verbosity(settings):
-    global verbose
-    if settings.is_defined('verbose'):
-        verbose_value = settings.eval('verbose')
-        if verbose_value.lower() == "true":
-            verbose = True
-        else:
-            verbose = False
 
 def ensure_dir(dir):
     try:
@@ -139,8 +133,6 @@ def make_converter(settings):
     return converter
 
 def go(settings, file_table):
-    set_verbosity(settings)
-    verbose_print("")
     pak_paths_prep = settings.eval_prep('pak_paths').split(",")
     pak_paths = [settings.eval_finalize(p.strip()) for p in pak_paths_prep]
     abs_pak_paths = [os.path.abspath(p) for p in pak_paths if p]

@@ -20,11 +20,12 @@
 import re
 import os
 import sys
-from contextlib import contextmanager
 import glob
 import resources
 import config
 import processing
+from contextlib import contextmanager
+from util import verbose_print, set_verbosity
 
 VERSION = "0.1a"
 
@@ -93,17 +94,30 @@ def create_config_file(cfg_path, resource_dir):
     return True
 
 def print_qs_info(resource_dir):
-    print("* quakesounds version %s *" % VERSION)
+    print("\n* quakesounds version %s *\n" % VERSION)
     info_files = glob.glob(os.path.join(resource_dir, "*_info.txt"))
     info = ""
     for path in info_files:
         with open(path, 'r') as instream:
-            info = info + instream.read()
+            info = info + "    " + instream.read()
     if not info:
         print("No internally bundled sound utilities.")
     else:
         print("Internally bundled sound utilities:")
         print(info.rstrip())
+
+def print_modules_info():
+    verbose_print("Modules used:")
+    if processing.expak_source == "system":
+        verbose_print("    expak: from system library, version %s" %
+                      processing.expak_version)
+    else:
+        verbose_print("    expak: not found in system library; using bundled version %s" %
+                      processing.expak_version)
+    if resources.pkg_resources_source == "system":
+        verbose_print("    pkg_resources: from system library")
+    else:
+        verbose_print("    pkg_resources: not found in system library; using bundled")
 
 def main(argv):
 
@@ -137,6 +151,12 @@ def main(argv):
         # Create the settings-evaluator.
         path_table['qs_internal'] = add_sep(resource_dir)
         settings = config.Settings(cfg_table, path_table)
+
+        # Set verbosity for the remainder of the run, and print module info
+        # if verbose.
+        set_verbosity(settings)
+        print_modules_info()
+        print("")
 
         # Get the resources->files mapping.
         files_path = settings.eval('files_path')

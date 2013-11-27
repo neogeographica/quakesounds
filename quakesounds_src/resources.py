@@ -17,16 +17,23 @@
 # You should have received a copy of the GNU General Public License
 # along with quakesounds.  If not, see <http://www.gnu.org/licenses/>.
 
-from contextlib import contextmanager
-from contextlib import closing
 import os
 import shutil
-from pkg_resources import resource_listdir
-from pkg_resources import resource_isdir
-from pkg_resources import resource_stream
 import tempfile
 import sys
 import stat
+from contextlib import contextmanager, closing
+
+saved_sys_path = sys.path
+sys.path = sys.path[1:]
+try:
+    from pkg_resources import resource_listdir, resource_isdir, resource_stream
+    sys.path = saved_sys_path
+    pkg_resources_source = "system"
+except ImportError:
+    sys.path = saved_sys_path
+    from pkg_resources import resource_listdir, resource_isdir, resource_stream
+    pkg_resources_source = "bundled"
 
 
 # Instead of treating zipped and unzipped application formats differently,
