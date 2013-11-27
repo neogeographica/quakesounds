@@ -35,8 +35,9 @@ def read_properties(prop_lines, prop_table, default_func):
         if not property_value:
             property_value = default_func(property_key)
         if property_value is None:
-            continue
-        prop_table[property_key] = property_value
+            prop_table.pop(property_key, None)
+        else:
+            prop_table[property_key] = property_value
 
 def read_properties_file(file_path, prop_table, default_func):
     try:
