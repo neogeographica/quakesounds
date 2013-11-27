@@ -93,7 +93,7 @@ def make_converter(settings):
         passthru_filename = None
         p_chain = []
         for stage in range(num_stages):
-            stage_args = [settings.eval_finalize(a, var_table)
+            stage_args = [settings.eval_finalize('converter', a, var_table)
                           for a in command_stages[stage]]
             if stage_args[0] == "%write_to%":
                 passthru_filename = stage_args[1]
@@ -136,7 +136,8 @@ def make_converter(settings):
 
 def go(settings, file_table):
     pak_paths_prep = settings.eval_prep('pak_paths').split(",")
-    pak_paths = [settings.eval_finalize(p.strip()) for p in pak_paths_prep]
+    pak_paths = [settings.eval_finalize('pak_paths', p.strip())
+                 for p in pak_paths_prep]
     abs_pak_paths = [os.path.abspath(p) for p in pak_paths if p]
     set_working_dir(settings)
     converter = make_converter(settings)
