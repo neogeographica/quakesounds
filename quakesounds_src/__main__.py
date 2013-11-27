@@ -167,6 +167,13 @@ def main(argv):
                 base_name = base_name[0:dot_pos]
             return base_name
         file_table = config.read_cfg(files_path, default_base_name)
+        if not file_table:
+            if os.path.exists(files_path):
+                print("Nothing to process in the file table at path: %s" % files_path)
+                return 0
+            else:
+                print("No file table found at path: %s" % files_path)
+                return 1
 
         # Do that voodoo that we do.
         processing.go(settings, file_table)
