@@ -180,6 +180,11 @@ def main(argv):
             print("All selected files processed.")
         print("")
 
+        # Wait if requested.
+        if settings.is_defined('pause_on_exit'):
+            if settings.eval('pause_on_exit').lower() == "true":
+                raw_input("Press Enter to finish: ")
+
     # Done!
     return 0
 
