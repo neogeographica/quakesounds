@@ -29,9 +29,5 @@ def verbose_print(format_str, args=None):
 
 def set_verbosity(settings):
     global verbose
-    if settings.is_defined('verbose'):
-        verbose_value = settings.eval('verbose')
-        if verbose_value.lower() == "true":
-            verbose = True
-        else:
-            verbose = False
+    verbose = settings.optional_bool('verbose')
+

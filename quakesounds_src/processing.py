@@ -72,6 +72,7 @@ def writer_func(instream, outpath):
         outstream.write(instream.read())
 
 def make_converter(settings):
+    sound_name_as_path = settings.optional_bool('sound_name_as_path')
     command = settings.eval_prep('converter', ['sound_name', 'write_to'])
     command_stages = [[a.strip() for a in s.split(",")]
                       for s in command.split("|")]
@@ -83,10 +84,11 @@ def make_converter(settings):
         if not valid_command_stage(stage_args, stage == num_stages - 1):
             sys.exit(1)
     def converter(orig_data, sound_name):
-        verbose_print("   creating %s", sound_name)
-        out_dir = os.path.dirname(sound_name)
-        if out_dir:
-            ensure_dir(out_dir)
+        verbose_print("   processing %s", sound_name)
+        if sound_name_as_path:
+            out_dir = os.path.dirname(sound_name)
+            if out_dir:
+                ensure_dir(out_dir)
         var_table = {'sound_name': sound_name, 'write_to': "%write_to%"}
         passthru_filename = None
         p_chain = []
@@ -140,7 +142,7 @@ def go(settings, file_table):
     converter = make_converter(settings)
     for path in abs_pak_paths:
         verbose_print("")
-        verbose_print("processing pak file %s...", path)
+        verbose_print("reading pak file %s...", path)
         expak.process_resources(path, converter, file_table)
     verbose_print("")
     return True

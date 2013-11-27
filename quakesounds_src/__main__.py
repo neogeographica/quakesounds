@@ -159,13 +159,17 @@ def main(argv):
         print("")
 
         # Get the resources->files mapping.
-        files_path = settings.eval('files_path')
+        include_dirs = settings.optional_bool('default_sound_name_includes_dirs')
         def default_base_name(orig_name):
-            base_name = orig_name.rpartition("/")[2].lstrip()
+            if include_dirs:
+                base_name = orig_name
+            else:
+                base_name = orig_name.rpartition("/")[2].lstrip()
             dot_pos = base_name.rfind(".")
             if dot_pos != -1:
                 base_name = base_name[0:dot_pos]
             return base_name
+        files_path = settings.eval('files_path')
         file_table = config.read_cfg(files_path, default_base_name)
         if not file_table:
             if os.path.exists(files_path):
@@ -188,9 +192,8 @@ def main(argv):
         print("")
 
         # Wait if requested.
-        if settings.is_defined('pause_on_exit'):
-            if settings.eval('pause_on_exit').lower() == "true":
-                raw_input("Press Enter to finish: ")
+        if settings.optional_bool('pause_on_exit'):
+            raw_input("Press Enter to finish: ")
 
     # Done!
     return 0

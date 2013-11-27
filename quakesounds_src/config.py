@@ -111,4 +111,9 @@ class Settings:
         return self.eval_finalize(prep_value, var_table)
     def is_defined(self, key):
         return key in self.cfg_table
+    def optional_bool(self, key):
+        if not self.is_defined(key):
+            return False
+        value = self.eval(key)
+        return value.lower() == "true"
 
