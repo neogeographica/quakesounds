@@ -148,7 +148,11 @@ def go(settings, file_table):
     pak_paths_prep = settings.eval_prep('pak_paths').split(",")
     pak_paths = [settings.eval_finalize('pak_paths', p.strip())
                  for p in pak_paths_prep]
-    abs_pak_paths = [os.path.abspath(p) for p in pak_paths if p]
+    if settings.is_defined('pak_home'):
+        pak_home = os.path.abspath(settings.eval('pak_home'))
+        abs_pak_paths = [os.path.join(pak_home, p) for p in pak_paths if p]
+    else:
+        abs_pak_paths = [os.path.abspath(p) for p in pak_paths if p]
     set_working_dir(settings)
     converter = make_converter(settings)
     for path in abs_pak_paths:
