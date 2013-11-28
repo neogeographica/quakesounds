@@ -50,7 +50,7 @@ def set_working_dir(settings):
     if settings.is_defined('out_working_dir'):
         out_working_dir = settings.eval('out_working_dir')
         if out_working_dir:
-            verbose_print("converter working dir is " + out_working_dir)
+            verbose_print("converter working directory is " + out_working_dir)
             if ensure_dir(out_working_dir):
                 verbose_print("created directory: " + out_working_dir)
             os.chdir(out_working_dir)
@@ -98,7 +98,7 @@ def make_converter(settings):
             out_dir = os.path.dirname(sound_name)
             if out_dir:
                 if ensure_dir(out_dir):
-                    verbose_print("    created directory: " + out_dir)
+                    verbose_print("    in working directory, created directory: " + out_dir)
         var_table = {'sound_name': sound_name, 'write_to': "%write_to%"}
         passthru_filename = None
         p_chain = []

@@ -81,7 +81,8 @@ class BadSetting(Exception):
 class Settings:
     def __init__(self, cfg_table, finalize_table):
         self.cfg_table = cfg_table.copy()
-        self.finalize_table = {'percent': "%", 'comma': ",", 'space': " "}
+        self.finalize_table = {'percent': "%", 'comma': ",",
+                               'space': " ", 'empty': ""}
         self.finalize_table.update(finalize_table)
         for token_name in self.finalize_table:
             self.cfg_table[token_name] = "%" + token_name + "%"
