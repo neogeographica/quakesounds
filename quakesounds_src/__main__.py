@@ -109,10 +109,10 @@ def print_qs_info(resource_dir):
 def print_modules_info():
     verbose_print("Modules used:")
     if processing.expak_source == "system":
-        verbose_print("    expak: from system library, version %s" %
+        verbose_print("    expak: from system library, version " +
                       processing.expak_version)
     else:
-        verbose_print("    expak: not found in system library; using bundled version %s" %
+        verbose_print("    expak: not found in system library; using bundled version " +
                       processing.expak_version)
     if resources.pkg_resources_source == "system":
         verbose_print("    pkg_resources: from system library")
@@ -159,16 +159,13 @@ def main(argv):
         print("")
 
         # Get the resources->files mapping.
-        include_dirs = settings.optional_bool('default_sound_name_includes_dirs')
         def default_base_name(orig_name):
-            if include_dirs:
-                base_name = orig_name
-            else:
-                base_name = orig_name.rpartition("/")[2].lstrip()
-            dot_pos = base_name.rfind(".")
+            dot_pos = orig_name.rfind(".")
             if dot_pos != -1:
-                base_name = base_name[0:dot_pos]
-            return base_name
+                base_name = orig_name[0:dot_pos]
+            else:
+                base_name = orig_name
+            return os.path.join(*base_name.split("/"))
         files_path = settings.eval('files_path')
         file_table = config.read_cfg(files_path, default_base_name)
         if not file_table:
@@ -188,7 +185,7 @@ def main(argv):
             for f in file_table:
                 print("    %s" % f)
 	else:
-            print("All selected files processed.")
+            print("All selections processed.")
         print("")
 
         # Wait if requested.

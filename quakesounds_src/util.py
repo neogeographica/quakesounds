@@ -20,12 +20,9 @@
 verbose = False
 
 
-def verbose_print(format_str, args=None):
+def verbose_print(message):
     if verbose:
-        if args:
-            print(format_str % args)
-        else:
-            print(format_str)
+        print(message)
 
 def set_verbosity(settings):
     global verbose

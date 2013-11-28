@@ -40,17 +40,20 @@ expak_version = expak.__version__
 def ensure_dir(dir):
     try:
         os.makedirs(dir)
+        return True
     except OSError as e:
         if e.errno != errno.EEXIST:
             raise
+        return False
 
 def set_working_dir(settings):
     if settings.is_defined('out_working_dir'):
         out_working_dir = settings.eval('out_working_dir')
         if out_working_dir:
-            ensure_dir(out_working_dir)
+            verbose_print("converter working dir is " + out_working_dir)
+            if ensure_dir(out_working_dir):
+                verbose_print("created directory: " + out_working_dir)
             os.chdir(out_working_dir)
-            verbose_print("converter working dir is %s", out_working_dir)
 
 def valid_command_stage(stage_args, is_last_stage):
     if not stage_args:
@@ -85,16 +88,17 @@ def make_converter(settings):
     for stage in range(num_stages):
         verbose_print("converter stage %d of %d:" % (stage + 1, num_stages))
         stage_args = command_stages[stage]
-        verbose_print("    %s" % " ".join(stage_args))
+        verbose_print("    " + " ".join(stage_args))
         if not valid_command_stage(stage_args, stage == num_stages - 1):
             sys.exit(1)
-    sound_name_as_path = settings.optional_bool('sound_name_as_path')
+    skip_makedir = settings.optional_bool('skip_preconverter_makedir')
     def converter(orig_data, sound_name):
-        verbose_print("   processing %s", sound_name)
-        if sound_name_as_path:
+        verbose_print("    processing " + sound_name)
+        if not skip_makedir:
             out_dir = os.path.dirname(sound_name)
             if out_dir:
-                ensure_dir(out_dir)
+                if ensure_dir(out_dir):
+                    verbose_print("    created directory: " + out_dir)
         var_table = {'sound_name': sound_name, 'write_to': "%write_to%"}
         passthru_filename = None
         p_chain = []
@@ -149,7 +153,7 @@ def go(settings, file_table):
     converter = make_converter(settings)
     for path in abs_pak_paths:
         verbose_print("")
-        verbose_print("reading pak file %s...", path)
+        verbose_print("reading pak file %s..." % path)
         expak.process_resources(path, converter, file_table)
     verbose_print("")
     return True
