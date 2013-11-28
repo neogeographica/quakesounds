@@ -72,8 +72,13 @@ def writer_func(instream, outpath):
         outstream.write(instream.read())
 
 def make_converter(settings):
-    sound_name_as_path = settings.optional_bool('sound_name_as_path')
-    command = settings.eval_prep('converter', ['sound_name', 'write_to'])
+    raw_converter_val = settings.raw_cfg('converter')
+    raw_has_tokens = (raw_converter_val.find("%") != -1)
+    reserved_names = ['sound_name', 'write_to']
+    if raw_has_tokens or settings.optional_bool('dumb_converter_eval'):
+        command = settings.eval_prep('converter', reserved_names)
+    else:
+        command = settings.eval_prep(raw_converter_val, reserved_names)
     command_stages = [[a.strip() for a in s.split(",")]
                       for s in command.split("|")]
     num_stages = len(command_stages)
@@ -83,6 +88,7 @@ def make_converter(settings):
         verbose_print("    %s" % " ".join(stage_args))
         if not valid_command_stage(stage_args, stage == num_stages - 1):
             sys.exit(1)
+    sound_name_as_path = settings.optional_bool('sound_name_as_path')
     def converter(orig_data, sound_name):
         verbose_print("   processing %s", sound_name)
         if sound_name_as_path:

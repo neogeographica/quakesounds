@@ -85,6 +85,12 @@ class Settings:
         self.finalize_table.update(finalize_table)
         for token_name in self.finalize_table:
             self.cfg_table[token_name] = "%" + token_name + "%"
+    def raw_cfg(self, key):
+        try:
+            value = self.cfg_table[key]
+        except KeyError as badkey:
+            raise BadSetting(badkey.message)
+        return value
     @staticmethod
     def sub_table_tokens(context_key, table, value, skip_names):
         def token_lookup(match):
@@ -104,11 +110,7 @@ class Settings:
                                        MAX_SUBSTITUTION_DEPTH)
         return self.sub_cfg_tokens(context_key, new_value, skip_names, iter + 1)
     def eval_prep(self, key, skip_names=None):
-        try:
-            value = self.cfg_table[key]
-        except KeyError as badkey:
-            raise BadSetting(badkey.message)
-        return self.sub_cfg_tokens(key, value, skip_names)
+        return self.sub_cfg_tokens(key, self.raw_cfg(key), skip_names)
     def eval_finalize(self, context_key, value, var_table=None):
         if var_table:
             total_table = self.finalize_table.copy()
