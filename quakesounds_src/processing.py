@@ -303,7 +303,7 @@ def make_converter(settings):
         return True
     return converter
 
-def go(settings, file_table):
+def go(settings, targets_table):
     """Process according to the given settings and sound selections.
 
     Get the pak file paths from the settings. Get and apply the working
@@ -311,10 +311,10 @@ def go(settings, file_table):
     settings and define a converter function. Process each pak file using
     :func:`expak.process_resources`.
 
-    :param settings:   settings
-    :type settings:    :class:`config.Settings`
-    :param file_table: table mapping sound selections to output names
-    :type file_table:  dict(str,str)
+    :param settings:      settings
+    :type settings:       :class:`config.Settings`
+    :param targets_table: table mapping sound selections to output names
+    :type targets_table:  dict(str,str)
 
     :returns: False if the converter definition is invalid, True otherwise
     :rtype:   bool
@@ -345,7 +345,7 @@ def go(settings, file_table):
     for path in abs_pak_paths:
         verbose_print("")
         verbose_print("reading pak file %s..." % path)
-        expak.process_resources(path, converter, file_table)
+        expak.process_resources(path, converter, targets_table)
     verbose_print("")
     return True
 

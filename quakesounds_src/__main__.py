@@ -327,27 +327,27 @@ def main(argv):
         print_modules_info()
         print("")
 
-        # Get the resources->files mapping.
-        files_path = settings.eval('files_path')
-        file_table = config.read_cfg(files_path, default_sound_name)
-        if not file_table:
-            if os.path.exists(files_path):
-                print("Nothing to process in the file table at path: %s" %
-                      files_path)
+        # Get the sound selections and name mappings.
+        targets_path = settings.eval('targets_path')
+        targets_table = config.read_cfg(targets_path, default_sound_name)
+        if not targets_table:
+            if os.path.exists(targets_path):
+                print("Nothing to process in the targets table at path: %s" %
+                      targets_path)
                 return 0
             else:
-                print("No file table found at path: %s" % files_path)
+                print("No targets table found at path: %s" % targets_path)
                 return 1
 
         # Do that voodoo that we do.
-        if not processing.go(settings, file_table):
+        if not processing.go(settings, targets_table):
             return 1
 
         # Inform of leftovers.
-        if file_table:
+        if targets_table:
             print("Not processed:")
-            for f in file_table:
-                print("    %s" % f)
+            for t in targets_table:
+                print("    %s" % t)
         else:
             print("All selections processed.")
         print("")
