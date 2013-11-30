@@ -17,14 +17,30 @@
 # You should have received a copy of the GNU General Public License
 # along with quakesounds.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Utility functions used by multiple modules. Not much here now!"""
+
 verbose = False
 
 
-def verbose_print(message):
-    if verbose:
-        print(message)
-
 def set_verbosity(settings):
+    """Enable/disable verbose printing according to config settings.
+
+    Set verbose=True if the verbose setting is set True (case-insensitive);
+    verbose=False if the setting is unset or some other value.
+
+    :param settings: config settings
+    :type settings:  :class:`config.Settings`
+
+    """
     global verbose
     verbose = settings.optional_bool('verbose')
 
+def verbose_print(message):
+    """Print the message string if verbose is currently True.
+
+    :param message: message string, ready-to-print
+    :type message:  str
+
+    """
+    if verbose:
+        print(message)
