@@ -2,7 +2,7 @@ Launching quakesounds
 ---------------------
 
 The quakesounds application is the file named "quakesounds.py". The
-distribution zipfile that you downloaded will have other stuff in it, but only
+distribution zipfile that you download will have other stuff in it, but only
 "quakesounds.py" is necessary for running the application.
 
 quakesounds is a Python application, so if you are already familiar with
@@ -26,17 +26,26 @@ you could run quakesounds like so:
 
     C:\Users\Me\Desktop\quakesounds.py
 
-If you have placed "quakesounds.py" in a directory that is in your executables
-path, you don't even have to specify what directory it is in; just enter:
+Or if your command prompt is currently in the same directory with it:
+
+    .\quakesounds.py
+
+If you have placed "quakesounds.py" in your executables path, when you run it
+you won't have to specify what directory it is in; from any working directory
+you can just enter:
 
     quakesounds.py
 
 Now if you don't have Python in your executables path, or if on Windows you
 don't have ".py" files associated with Python, then the above examples
-wouldn't work. In that case you'll have to explicitly run Python and give it
-the path to quakesounds.py, like so:
+won't work. In that case you'll have to explicitly run Python and give it the
+path to quakesounds.py, like so:
 
     C:\Python27\python.exe C:\Users\Me\Desktop\quakesounds.py
+
+In any of these cases, you can send command-line arguments to quakesounds
+by adding them after "quakesounds.py" in the command line. README.md has some
+examples of using command-line arguments.
 
 ### GUI launch
 
@@ -60,8 +69,8 @@ useful, but it's beyond the scope of this readme.
 If you're using PowerShell on Windows, then when you manually run a Python
 script it will behave as if you had launched it through the GUI.
 
-If you want it to instead print messages inside the PowerShell window, then
-you need to modify the PATHEXT environment variable to include the .PY
+If you want it to instead print its messages inside the PowerShell window,
+then you need to modify the PATHEXT environment variable to include the .PY
 file extension. You can make this change for the current PowerShell by
 entering this:
 

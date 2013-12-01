@@ -1,9 +1,9 @@
 Configuring quakesounds
 -----------------------
 
-This description assumes that you've already read the "Quickstart" and
-"Customizing" sections in README.md. Below are more details about exactly how
-the quakesounds configuration is interpreted.
+This description assumes that you've already read the "Quickstart",
+"Walkthrough", and "Customizing" sections in README.md. Below are more details
+about exactly how the quakesounds configuration is interpreted.
 
 ### Config format
 
@@ -34,10 +34,10 @@ Command-line settings take precedence over settings from the config file.
 If a setting specifies a name but not a value, that setting is considered to
 have no defined value. So for example just specifying "pak_home:" on the
 command line means that the `pak_home` setting will be undefined regardless of
-how it is defined in the config file. Note that an undefined setting is not
-emptystring; it is literally undefined, it will cause quakesounds to fail if it
-is a required setting, and it cannot be referenced in token substitution (see
-below).
+how it is defined in the config file. Note that an undefined setting is *not*
+emptystring; it is literally undefined, it will cause quakesounds to fail if
+it is a required setting, and it cannot be referenced in setting value
+substitution (see below).
 
 ### Config example
 
@@ -95,10 +95,10 @@ the following files:
   `%qs_internal%noiseprofile`
 
   * If your version of quakesounds is bundled with the SoX utility included,
-  that is made available as `%qs_internal%sox`
+  that utility is made available as `%qs_internal%sox`
 
   * If your version of quakesounds is bundled with the ffmpeg utility
-  included, that is made available as `%qs_internal%ffmpeg`
+  included, that utility is made available as `%qs_internal%ffmpeg`
 
 * `%percent%` will resolve to the "%"" character.
 

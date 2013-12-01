@@ -3,18 +3,14 @@ quakesounds: audio processing pipeline for Quake sound samples
 
 **Current release:** [1.0](https://github.com/neogeographica/quakesounds/releases)
 
-quakesounds is a utility for easily ripping sound effects out of Quake pak
-files and pushing them through a sequence of audio processing effects.
+quakesounds is a utility for easily ripping sounds out of Quake pak files and
+pushing them through a sequence of audio processing effects.
 
-The idea originated when I had the urge to use a few Quake-related noises as
+Motivation came from my experience setting up a few Quake-related noises as
 alert sounds on my phone. That involved a surprising amount of work to find
 good alert-sound candidates and then extract, rename, noise-reduce,
 format-convert, and gain-normalize them. So I thought it might be neat if I
-gave other folks a shortcut for all that.
-
-Distributing the processed files was illegal-ish though, so I put together a
-utility that you can throw your own pak files at and have processed sounds pop
-out the other end, to do with as you will.
+gave other folks a shortcut for that process.
 
 The project took on extra life as an excuse to see what was involved in a
 complete/proper open-source user-configurable release of a modestly-scoped
@@ -49,10 +45,11 @@ of SoX and ffmpeg. You won't need to worry about installing them yourself.
 
 * If you are on some other platform -- like Linux or 32-bit OS X -- then you
 *will* need to separately install SoX and/or ffmpeg if you are going to do any
-processing that uses them.
+processing that uses them. It's preferable to get the most recent versions of
+those utilities.
 
 * If you intend to use audio processing utilities other than SoX or ffmpeg,
-quakesounds can certainly accomodate that, but you'll have to install those
+quakesounds can certainly accomodate that, but you'll have to install other
 utilities separately.
 
 That's about it. quakesounds also depends on the Python modules
@@ -109,8 +106,45 @@ Quickstart
 ----------
 
 quakesounds is very configurable, but you can ignore a lot of the details for
-starters. This quickstart section will walk through a few steps that will
-generated some converted sounds using the default settings.
+starters. In this quickstart section we'll create some sound files as quickly
+as possible; the next sections will describe what is happening in more
+detail.
+
+1. If you're using a quakesounds distribution that has internally-bundled
+utilities, skip ahead to step 2. Otherwise, if you're using your own external
+versions of sox and ffmpeg, then make sure that those utilities are installed
+and ready to go. For the purposes of this quickstart, sox and ffmpeg (or on
+Windows, sox.exe and ffmpeg.exe) need to be placed in your executables path
+-- i.e. running them should not require typing their entire path.
+
+2. If you're going to run quakesounds from a command prompt, make sure that
+the working directory for that command prompt is the directory where the
+"quakesounds.py" file is located.
+
+3. Now run quakesounds once, using "quakesounds.py" (as described in
+LAUNCHING.md).
+
+4. You should see a "quakesounds.cfg" file appear in that directory.
+
+5. Now make sure that that directory also contains the file
+"quakesounds.targets" that came with the quakesounds distribution.
+
+6. Copy your "pak0.pak" and "pak1.pak" files into that same directory.
+
+7. Run quakesounds again. (You may see a couple of warnings about "clipping";
+this is expected. If you see a *lot* of warnings, your version of the SoX
+utility may be old.)
+
+8. You should see a "quakesounds_out" subdirectory appear. "quakesounds_out"
+should contain several files with the m4r extension; these are noise-reduced,
+gain-normalized, iOS-alert-sound-ready versions of a few selected Quake
+sounds.
+
+Victory! But now let's take a closer look at what is going on there.
+
+
+Walkthrough
+-----------
 
 For the example command lines in this section, I'll assume that you're on
 Windows, that Python is on your executables path, that "quakesounds.py" is in
@@ -121,11 +155,11 @@ what command-line arguments (if any) we give it.
 
 ### The config file
 
-The most important thing to know is that quakesounds will look for its
-configuration in a file named "quakesounds.cfg". That config file contains the
-settings that control the behavior of quakesounds, although settings can also
-be specified on the command line to add to or change the settings taken from
-the file.
+quakesounds will look for its configuration in a file named "quakesounds.cfg".
+Settings can also be specified on the command line to add to or change the
+settings taken from this file; however the command line will usually be used
+for temporarily changing just a few settings, while the "quakesounds.cfg" file
+should contain the complete baseline configuration that you use.
 
 quakesounds expects the "quakesounds.cfg" file to be in the current working
 directory. If you're manually running quakesounds then the working directory
@@ -136,13 +170,15 @@ different working directories.
 
 If there is no "quakesounds.cfg" file in the working directory, and no
 settings on the command line, then quakesounds will create a default version
-of the config file and exit. Let's do that now by running quakesounds without
-any command-line arguments:
+of the config file and exit. So if you run quakesounds without any
+command-line arguments:
 
     .\quakesounds.py
 
-You should now see a new file named "quakesounds.cfg" in the working
-directory.
+... then that will create a default "quakesounds.cfg" file in the working
+directory **if** there is not currently such a file. On the other hand, if
+there already is a config file, then invoking quakesounds like this will run
+it using whatever settings are in the config file.
 
 ### The targets file
 
@@ -151,44 +187,32 @@ in a file that contains a list of sound resource names. This list can also
 specify a new name to use for each sound.
 
 The quakesounds distribution comes with an example of such a file, named
-"quakesounds.targets".
+"quakesounds.targets". Take a look inside that file to see an example of how
+the sounds were selected and named.
 
 You can tell quakesounds to read this info from whatever file you like, using
-the `targets_path` setting, but for now we'll just roll with the defaults. So
-make sure that the "quakesounds.targets" file is in the current working
-directory, since that's the default configuration.
+the `targets_path` setting. The setting in the default "quakesounds.cfg"
+will look for a file named "quakesounds.targets" in the working directory.
 
 ### Which pak files to read
 
 The names and locations of pak files are affected by the `pak_paths` and
-`pak_home` settings. Again we're going to roll with the defaults, so just copy
-your "pak0.pak" and "pak1.pak" files into the current working directory.
-
-### Sound utilities
-
-If your flavor of quakesounds has internally-bundled versions of SoX and
-ffmpeg then you have nothing to worry about here.
-
-If you're setting up your own utilities externally, then for the purposes of
-this example make sure that your externally-installed versions of those
-utilities are named "sox" and "ffmpeg" and that they are on your executables
-path.
+`pak_home` settings. In the default "quakesounds.cfg" file, `pak_paths` is set
+to pak0.pak,pak1.pak and `pak_home` is unset. This configuration will make
+quakesounds look for "pak0.pak" and "pak1.pak" files in the current working
+directory.
 
 ### Processing the sounds
 
 The audio processing pipeline for the extracted sounds is controlled by the
-`converter` setting. Again though we're going to stick with the default in
-this example, which should create noise-reduced, gain-normalized, iOS-ready
-versions of the sounds selected in "quakesounds.targets".
+`converter` setting. In the default "quakesounds.cfg" file, `converter` is
+set to m4r, which will create iOS alert sounds.
 
-So now that you have a config file and everything else in place, just run
-quakesounds again:
-
-    .\quakesounds.py
-
-If something went wrong, hopefully a nice error message has explained the
-problem. If all went well though, a directory named "quakesounds_out" should
-have been created in the working directory, containing a bunch of m4r files.
+In the quickstart, once you had a config file in place, you ran quakesounds
+again without any command line arguments and without editing the config file.
+This means that all of the default settings described above were used to
+select and process the sound files, the result being a bunch of m4r files
+in the "quakesounds_out" directory.
 
 ### Overriding the config file
 
@@ -209,16 +233,17 @@ You can specify as many settings on the command line as you like. If you like
 the Ogg Vorbis output but want it to be a bit louder, you could override the
 normalized DB setting in the config file (which is -15) like so:
 
-    .\quakesounds.py converter:ogg norm_db:-13
+    .\quakesounds.py converter:ogg norm_db:-12
 
-And if your pak files were located somewhere else, for example in "C:\Quake":
+And if your pak files were located somewhere else, for example in
+"C:\Quake\id1":
 
-    .\quakesounds.py converter:ogg norm_db:-13 pak_home:C:\Quake
+    .\quakesounds.py converter:ogg norm_db:-12 pak_home:C:\Quake\id1
 
 If you need to work with a setting value that has spaces in it, just put
 quotes around the whole setting:
 
-    .\quakesounds.py converter:ogg norm_db:-13 "pak_home:C:\path with a space"
+    .\quakesounds.py converter:ogg norm_db:-12 "pak_home:C:\path with a space"
 
 Of course if there's a particular setting value that you want to use
 repeatedly, you should just edit that setting's value in the config file.
@@ -272,7 +297,8 @@ The `pak_home` setting used above, for example, is one of the optional
 settings. If it is set, then it is used to resolve any relative paths in the
 pak_paths list. The `pause_on_exit` setting mentioned earlier is another
 optional setting. You can set the `verbose` setting to True for more logging.
-You can set `out_working_dir` to control where the output files are generated.
+You can set `out_working_dir` to specify the directory where the output files
+are placed.
 
 The remaining optional settings are more situational, but it's worth having
 a look at their descriptions to see what's available.
@@ -285,13 +311,20 @@ of those groups. This is because, for convenience, the value of a setting can
 include values from other settings, and you can define as many settings as
 you like.
 
-`norm_db` is a useful setting because most of the settings that can be
-referred to by the `converter` value include a reference to a setting called
-`sox_norm`, and `sox_norm` in turn contains a reference to `norm_db`.
+In the default "quakesounds.cfg" file, `norm_db` is one of these additional
+settings used by other settings. `norm_db` is referenced in a setting named
+`sox_norm`, which defines the command-line arguments necessary for gain
+normalization with SoX. The `sox_norm` setting in turn is referenced in every
+converter command definition that uses SoX and does gain normalization.
 
-Other referenced settings include `sox_path` and `ffmpeg_path`, which define
-the file paths to those utilities; you may need to change their values if you
-are using external utilities that aren't on your executables path.
+So by setting a value for `norm_db` you affect any sound conversion that does
+gain normalization. With `norm_db` isolated in this way, gain adjustments are
+simpler to do (especially when doing them on the quakesounds command line).
+
+Other settings referenced in the default config include `sox_path` and
+`ffmpeg_path`, which define the file paths to those utilities; you may need to
+change their values if you are using external utilities that aren't on your
+executables path.
 
 And there is nothing sacred about the default collection of available
 `converter` values (passthru, wav, ogg, m4r). When you choose a value for the
@@ -323,4 +356,3 @@ against their source or link with their libraries.
 The bundled copy of the expak module is also licensed under GPLv3. The bundled
 copy of pkg_resources is licensed to be used under the Python Software
 Foundation License or the Zope Public License.
-
