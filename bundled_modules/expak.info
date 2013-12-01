@@ -1,0 +1,21 @@
+expak module from expak 1.0
+
+Home-page: https://github.com/neogeographica/expak
+Author: Joel Baxter
+Author-email: joel.baxter@neogeographica.com
+License: GPLv3
+
+Keywords: Quake pak
+Platform: any
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Utilities
+
