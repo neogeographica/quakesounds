@@ -1,5 +1,7 @@
 .PHONY: default all clean superclean
 
+version := $(shell ./quakesounds_version.py)
+
 bundle_expak := true
 bundle_pkg_resources := true
 
@@ -109,7 +111,7 @@ util_dists/mac/%:
 	@$(curl) $($(util)_mac_url) -o $@
 	@echo $($(util)_mac_txt) > util_dists/mac/$(util)_info.txt
 
-build/quakesounds_%.py: $$(%_utils) $(sources)
+build/quakesounds_$(version)_%.py: $$(%_utils) $(sources)
 	@echo "Building $@"
 	@mkdir -p build
 	@rm -rf build/quakesounds_src
@@ -123,17 +125,17 @@ build/quakesounds_%.py: $$(%_utils) $(sources)
 	@rm build/quakesounds.zip
 	@rm -rf build/quakesounds_src
 
-build/quakesounds_%.zip: build/quakesounds_%.py $(extras) $$(%_util_dists)
+build/quakesounds_$(version)_%.zip: build/quakesounds_$(version)_%.py $(extras) $$(%_util_dists)
 	@echo "Bundling $@"
 	@cp $(extras) build/
 	@rm -rf build/util_dists_info
 	@if test -n "$($*_util_dists)"; then mkdir build/util_dists_info; fi
 	@if test -n "$($*_util_dists)"; then cp util_dists/$*/* build/util_dists_info/; fi
 	@if test -n "$($*_util_dists)"; then echo $(util_dists_readme) > build/util_dists_info/README.txt; fi
-	@cd build; mv quakesounds_$*.py quakesounds.py; $(zip) quakesounds_$*.zip $(extras) util_dists_info/* quakesounds.py
+	@cd build; mv quakesounds_$(version)_$*.py quakesounds.py; $(zip) quakesounds_$(version)_$*.zip $(extras) util_dists_info/* quakesounds.py
 	@cd build; rm -rf $(extras) util_dists_info quakesounds.py
 
-all: build/quakesounds_noarch.zip build/quakesounds_win.zip build/quakesounds_mac.zip
+all: build/quakesounds_$(version)_noarch.zip build/quakesounds_$(version)_win.zip build/quakesounds_$(version)_mac.zip
 
 clean:
 	rm -rf build
