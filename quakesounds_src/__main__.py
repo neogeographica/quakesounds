@@ -58,6 +58,8 @@ DEFAULT_CFG = "default.cfg"
 CFG_FILE = "quakesounds.cfg"
 UTILITY_PATH_RE = re.compile("%UTILITY_PATH%(\S+)")
 
+pause_on_exit = False
+
 
 def app_home():
     """Find the home directory of the application, for use in config settings.
@@ -102,12 +104,38 @@ def add_sep(dir_path):
     """
     return os.path.join(dir_path, "a")[:-1]
 
+def set_pause_on_exit(cfg_table, path_table):
+    global pause_on_exit
+    """Set the pause-on-exit flag if requested.
+
+    If the pause_on_exit key is not in the given config table, return.
+    Otherwise make a temporary :class:`config.Settings` object from the given
+    properties, and set the global pause-on-exit flag according to the value
+    of that key evaluated as an optional bool.
+
+    :param cfg_table:  table of user config properties
+    :type cfg_table:   dict(str,str)
+    :param path_table: table of system path properties
+    :type path_table:  dict(str,str)
+
+    """
+    if 'pause_on_exit' in cfg_table:
+        temp_settings = config.Settings(cfg_table, path_table)
+        pause_on_exit = temp_settings.optional_bool('pause_on_exit')
+
+def optional_pause_on_exit():
+    """If the global pause-on-exit flag is set, wait for Enter keypress.
+
+    """
+    if pause_on_exit:
+        raw_input("Press Enter to finish: ")
+
 def user_temp_dir(cfg_table, path_table):
     """Return the user-specified temp directory, if any.
 
     If the temp_dir key is not in the given config table, return None.
-    Otherwise make a temporary Settings object from the given properties, and
-    return the value it gives for the temp_dir setting.
+    Otherwise make a temporary :class:`config.Settings` object from the given
+    properties, and return the value it gives for the temp_dir setting.
 
     :param cfg_table:  table of user config properties
     :type cfg_table:   dict(str,str)
@@ -119,7 +147,8 @@ def user_temp_dir(cfg_table, path_table):
 
     """
     if 'temp_dir' in cfg_table:
-        return config.Settings(cfg_table, path_table).eval('temp_dir')
+        temp_settings = config.Settings(cfg_table, path_table)
+        return temp_settings.eval('temp_dir')
     else:
         return None
 
@@ -318,9 +347,11 @@ def main(argv):
     # Apply any command-line args.
     config.update_cfg(argv, cfg_table)
 
-    # Extract packaged resources for the duration of the remaining work.
+    # Set pause_on_exit appropriately, and extract packaged resources for the
+    # duration of the remaining work.
     path_table = {'qs_home' : add_sep(qs_home),
                   'qs_working_dir' : add_sep(qs_working_dir)}
+    set_pause_on_exit(cfg_table, path_table)
     temp_dir = user_temp_dir(cfg_table, path_table)
     with resources.temp_copies(RES_PATH, temp_dir) as resource_dir:
 
@@ -370,10 +401,6 @@ def main(argv):
             print("All selections processed.")
         print("")
 
-        # Wait if requested.
-        if settings.optional_bool('pause_on_exit'):
-            raw_input("Press Enter to finish: ")
-
     # Done!
     return 0
 
@@ -383,3 +410,5 @@ try:
 except (config.BadSetting, config.TooManySubstitutions) as e:
     sys.stderr.write("\nError: " + str(e) + "\n")
     sys.exit(1)
+finally:
+    optional_pause_on_exit()
