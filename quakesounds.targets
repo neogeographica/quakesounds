@@ -1,7 +1,6 @@
-# Each line of this file indicates some sound to extract from the pak files.
-# A new basename (the filename without its extension) can be specified for the
-# extracted file by putting the new basename after a colon on the same line. If
-# no new basename is specified then the original basename will be used.
+# This file should be pointed to by the targets_path setting of the
+# quakesounds configuration. In the default "quakesounds.cfg" file, see
+# the description of targets_path for details of the format for this file.
 
 sound/buttons/airbut1.wav  : quake_button
 sound/buttons/switch02.wav : quake_switch_02
