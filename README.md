@@ -162,11 +162,11 @@ for temporarily changing just a few settings, while the "quakesounds.cfg" file
 should contain the complete baseline configuration that you use.
 
 quakesounds expects the "quakesounds.cfg" file to be in the current working
-directory. If you're manually running quakesounds then the working directory
-is whatever directory you're in. If you run quakesounds by double-clicking an
-icon, then the working directory is normally whatever directory
-"quakesounds.py" is in, although you can also create shortcuts that use
-different working directories.
+directory. If you're manually running quakesounds from a command prompt, then
+the working directory is whatever directory you're in. If you run quakesounds
+by double-clicking an icon, then the working directory is normally whatever
+directory "quakesounds.py" is in, although you can also create shortcuts that
+use different working directories.
 
 If there is no "quakesounds.cfg" file in the working directory, and no
 settings on the command line, then quakesounds will create a default version
@@ -227,7 +227,7 @@ The result should be the creation of a bunch of ogg files in "quakesounds_out".
 What you did there was change the value of a setting using the command line,
 for that one run of quakesounds only. You could have the same effect more
 permanently by editing the config file and replacing the value of the
-converter setting in there.
+`converter` setting in there.
 
 You can specify as many settings on the command line as you like. If you like
 the Ogg Vorbis output but want it to be a bit louder, you could override the
@@ -262,7 +262,7 @@ quakesounds only has three required settings, i.e. settings that **must** have
 values either in the config file or on the command line. These settings are
 `targets_path`, `pak_paths`, and `converter`. You can read more about them in
 the comments in the default "quakesounds.cfg" file, in the "REQUIRED SETTINGS"
-section, but here's the gist.
+section, but here's the gist:
 
 If you're using the default "quakesounds.cfg", there are four legal values
 for the `converter` setting:
@@ -278,11 +278,12 @@ sound file to Ogg Vorbis format.
 * m4r : Along with noise reduction and gain normalization, this converts the
 sound file to M4A format, and gives it the iOS-expected m4r file extension.
 
-`targets_path` specifies the file containing a list of selected sounds, as
-described above; it can be any file path in the format appropriate for your
-OS. (For the format of this file's contents, see the example
+It's possible to do other types of conversions though; more about that soon.
+
+`targets_path` is the path of the file containing a list of selected sounds,
+as described above. For the format of this file's contents, see the example
 "quakesounds.targets" file, and the comments about `targets_path` in the
-default "quakesounds.cfg".)
+default "quakesounds.cfg".
 
 `pak_paths` is a comma-separated list of file paths of pak files to read.
 
@@ -293,12 +294,13 @@ but if it doesn't find values for them it will assume that they should be
 considered false or unset. You can find descriptions of these in the
 "OPTIONAL SETTINGS" section of the default "quakesounds.cfg".
 
-The `pak_home` setting used above, for example, is one of the optional
+The `pak_home` setting used in the examples above is one of the optional
 settings. If it is set, then it is used to resolve any relative paths in the
 pak_paths list. The `pause_on_exit` setting mentioned earlier is another
-optional setting. You can set the `verbose` setting to True for more logging.
-You can set `out_working_dir` to specify the directory where the output files
-are placed.
+optional setting. `verbose` is an optional setting that you can set to True
+to enable more messages while quakesounds runs. `out_working_dir` is an
+optional setting that can be used to specify the directory where the output
+files are placed.
 
 The remaining optional settings are more situational, but it's worth having
 a look at their descriptions to see what's available.
@@ -322,9 +324,10 @@ gain normalization. With `norm_db` isolated in this way, gain adjustments are
 simpler to do (especially when doing them on the quakesounds command line).
 
 Other settings referenced in the default config include `sox_path` and
-`ffmpeg_path`, which define the file paths to those utilities; you may need to
+`ffmpeg_path`, which define the file paths to those utilities. You may need to
 change their values if you are using external utilities that aren't on your
-executables path.
+executables path, or if you have a quakesounds with bundled internal utilities
+and you want to force it to use external utilities.
 
 And there is nothing sacred about the default collection of available
 `converter` values (passthru, wav, ogg, m4r). When you choose a value for the
@@ -334,9 +337,13 @@ processing sound data, and what arguments to use.
 
 So you can examine the current definitions of the `passthru`, `wav`, `ogg`,
 and `m4r` settings to see exactly what they are doing to the sound data. You
-can edit the definitions of those settings. You can also add a new setting
-containing a definition of a different sound processing pipeline, with
-whatever setting name you like, and then specify it as the `converter` to use.
+can edit the definitions of those settings to change the arguments used when
+invoking the sound utilities.
+
+You could also add a new setting containing a definition of an entirely
+different sound processing pipeline, using whatever new setting name you like.
+The name of this new setting could then be set as the value of `converter`, to
+apply your new processing pipeline when quakesounds runs.
 
 For more information about the way the config settings work, please see the
 CONFIGURING.md file.
@@ -356,3 +363,4 @@ against their source or link with their libraries.
 The bundled copy of the expak module is also licensed under GPLv3. The bundled
 copy of pkg_resources is licensed to be used under the Python Software
 Foundation License or the Zope Public License.
+
