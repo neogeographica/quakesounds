@@ -1,6 +1,6 @@
 .PHONY: default all clean superclean
 
-version := $(shell ./quakesounds_version.py)
+version := $(shell python quakesounds_version.py)
 
 bundle_expak := true
 bundle_pkg_resources := true
