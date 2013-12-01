@@ -31,6 +31,14 @@ the colon.
 
 Command-line settings take precedence over settings from the config file.
 
+If a setting specifies a name but not a value, that setting is considered to
+have no defined value. So for example just specifying "pak_home:" on the
+command line means that the `pak_home` setting will be undefined regardless of
+how it is defined in the config file. Note that an undefined setting is not
+emptystring; it is literally undefined, it will cause quakesounds to fail if it
+is a required setting, and it cannot be referenced in token substitution (see
+below).
+
 ### Config example
 
 If you run quakesounds without any command-line arguments, and without any
