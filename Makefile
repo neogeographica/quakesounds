@@ -17,7 +17,7 @@ mac_utils := $(addprefix util/mac/,$(utils))
 ffmpeg_win_dist := ffmpeg-20131123-git-638d79a-win32-static.7z
 ffmpeg_win_url := http://ffmpeg.zeranoe.com/builds/win32/static/$(ffmpeg_win_dist)
 ffmpeg_win_exe := ffmpeg-20131123-git-638d79a-win32-static/bin/ffmpeg.exe
-ffmpeg_win_txt := ffmpeg: FFmpeg 32-bit build 20131123 for Windows, from ffmpeg.zeranoe.com
+ffmpeg_win_txt := ffmpeg: FFmpeg (www.ffmpeg.org) 32-bit build 20131123 for Windows, from ffmpeg.zeranoe.com
 
 # must begin with "sox-"
 sox_win_dist := sox-14.4.1a-win32.zip
@@ -33,7 +33,7 @@ ffmpeg_mac_dist_src := SnowLeopard_Lion_Mountain_Lion_Mavericks_04.11.2013.zip
 ffmpeg_mac_dist := ffmpeg-$(ffmpeg_mac_dist_src)
 ffmpeg_mac_url := http://ffmpegmac.net/resources/$(ffmpeg_mac_dist_src)
 ffmpeg_mac_exe := ffmpeg
-ffmpeg_mac_txt := ffmpeg: FFmpeg 64-bit build 04.11.2013 for OS X, from ffmpegmac.net
+ffmpeg_mac_txt := ffmpeg: FFmpeg (www.ffmpeg.org) 64-bit build 04.11.2013 for OS X, from ffmpegmac.net
 
 # must begin with "sox-"
 sox_mac_dist := sox-14.4.1-macosx.zip
