@@ -19,7 +19,25 @@
 
 """Audio processing pipeline for Quake sound samples.
 
-XXX Summary goes here!
+quakesounds is a utility for easily ripping sound effects out of Quake pak
+files and pushing them through a sequence of audio processing effects.
+
+quakesounds will look for its configuration in :file:`quakesounds.cfg` in the
+current working directory. Settings can also be specified on the command line
+to add to or change the settings taken from the config file.
+
+If there is no :file:`quakesounds.cfg` in the working directory, and no
+settings on the command line, then quakesounds will create a default version
+of the config file and exit.
+
+If quakesounds did get a configuration, then it will reference those settings
+to determine which pak files to read, what sounds to extract, and how to
+process those sounds.
+
+:func:`expak.process_resources` will be invoked to process each selected
+sound. The converter function will spawn processes for commands, or for
+a chain of commands, that can accept sound data on stdin and finally write
+the processed result to a file.
 
 """
 
