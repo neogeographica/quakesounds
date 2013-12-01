@@ -128,8 +128,8 @@ build/quakesounds_%.zip: build/quakesounds_%.py $(extras) $$(%_util_dists)
 	@if test -n "$($*_util_dists)"; then mkdir build/util_dists_info; fi
 	@if test -n "$($*_util_dists)"; then cp util_dists/$*/* build/util_dists_info/; fi
 	@if test -n "$($*_util_dists)"; then echo $(util_dists_readme) > build/util_dists_info/README.txt; fi
-	@cd build; $(zip) quakesounds_$*.zip $(extras) util_dists_info/* quakesounds_$*.py
-	@cd build; rm -rf $(extras) util_dists_info
+	@cd build; mv quakesounds_$*.py quakesounds.py; $(zip) quakesounds_$*.zip $(extras) util_dists_info/* quakesounds.py
+	@cd build; rm -rf $(extras) util_dists_info quakesounds.py
 
 all: build/quakesounds_noarch.zip build/quakesounds_win.zip build/quakesounds_mac.zip
 
