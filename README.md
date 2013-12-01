@@ -285,8 +285,6 @@ of those groups. This is because, for convenience, the value of a setting can
 include values from other settings, and you can define as many settings as
 you like.
 
-
-
 `norm_db` is a useful setting because most of the settings that can be
 referred to by the `converter` value include a reference to a setting called
 `sox_norm`, and `sox_norm` in turn contains a reference to `norm_db`.
