@@ -307,3 +307,20 @@ whatever setting name you like, and then specify it as the `converter` to use.
 
 For more information about the way the config settings work, please see the
 CONFIGURING.md file.
+
+
+Legal stuff
+-----------
+
+The quakesounds application is licensed under version 3 of the GPL. See the
+LICENSE file for the full text of that license.
+
+The SoX and ffmpeg utilities bundled in some distributions of quakesounds are
+licensed under version 2 of the GPL. My understanding is that there are no
+incompatibilities with that arrangement, especially since I don't compile
+against their source or link with their libraries.
+
+The bundled copy of the expak module is also licensed under GPLv3. The bundled
+copy of pkg_resources is licensed to be used under the Python Software
+Foundation License or the Zope Public License.
+
