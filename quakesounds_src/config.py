@@ -151,6 +151,9 @@ class TooManySubstitutions(Exception):
     def __str__(self):
         """String representation.
 
+        :returns: exception description
+        :rtype:   str
+
         """
         return ("evaluation of setting '%s' "
                 "has gone through %d token substitution passes "
@@ -182,6 +185,9 @@ class BadSetting(Exception):
 
     def __str__(self):
         """String representation.
+
+        :returns: exception description
+        :rtype:   str
 
         """
         if not self.context_key:
@@ -418,7 +424,7 @@ class Settings:
         """Check to see if a key is present in the user-defined config.
 
         :param key: key of the user-defined property to check
-        :type key:        str
+        :type key:  str
 
         :returns: whether the key is in the user-defined config
         :rtype:   bool

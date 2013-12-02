@@ -48,8 +48,11 @@ def ensure_dir(dir):
     :param dir: directory path to create if necessary
     :type dir:  str
 
-    :returns: True if the directory was created, False if it already exists.
+    :returns: True if the directory was created, False if it already exists
     :rtype:   bool
+
+    :raises OSError: if the directory creation fails for reasons other than
+                     "directory already exists"
 
     """
     try:
