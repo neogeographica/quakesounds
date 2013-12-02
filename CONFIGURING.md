@@ -103,8 +103,8 @@ the following files:
 * `%percent%` will resolve to the "%"" character.
 
 * `%comma%` will resolve to the comma character. This can be useful in a
-couple of the settings below whose values are comma-separated lists of things,
-if you need to actually have a comma in one of the values.
+couple of the settings whose values are comma-separated lists of things, if
+you need to actually have a comma as part of one of the list elements.
 
 * `%space%` and `%empty%` will resolve to the space character or emptystring,
 respectively. quakesounds will strip whitespace from the beginning or end of
