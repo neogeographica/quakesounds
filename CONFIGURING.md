@@ -124,7 +124,7 @@ for use in settings that define converter commands.
   argument, which is a file path to create and write to. It takes data on
   stdin and writes it directly to the specified file without changing the data.
   `%write_to%` can be the command for the only or last stage in a chain. Any
-  other stages after a `%write_to%` stage it will be ignored.
+  other stages after a `%write_to%` stage will be ignored.
 
 For more context about `%sound_name%` and `%write_to%`, see the default
 "quakesounds.cfg", its converter command definitions, and their comments.
