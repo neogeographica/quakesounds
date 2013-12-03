@@ -87,7 +87,7 @@ def set_working_dir(settings):
                 verbose_print("created directory: " + out_working_dir)
             os.chdir(out_working_dir)
 
-def valid_command_stage(settings, stage_args, is_last_stage):
+def valid_command_stage(settings, context_key, stage_args, is_last_stage):
     """Test command-stage elements for possible problems.
 
     Run through the few validation checks that are possible without using any
@@ -98,6 +98,8 @@ def valid_command_stage(settings, stage_args, is_last_stage):
 
     :param settings:      settings
     :type settings:       :class:`config.Settings`
+    :param context_key:   key name to use in settings-eval exceptions
+    :type context_key:    str
     :param stage_args:    list of command-stage elements
     :type stage_args:     list(str)
     :param is_last_stage: whether this is the final stage of the command
@@ -115,7 +117,7 @@ def valid_command_stage(settings, stage_args, is_last_stage):
 
     """
     test_var_table = {'sound_name': "%sound_name%", 'write_to': "%write_to%"}
-    test_stage_args = [settings.eval_finalize('converter', a, test_var_table)
+    test_stage_args = [settings.eval_finalize(context_key, a, test_var_table)
                        for a in stage_args]
     if not test_stage_args:
         sys.stderr.write("    Error: converter command stage is empty\n")
@@ -182,11 +184,12 @@ def make_converter(settings):
     # and %write_to% tokens are skipped in this first evaluation.
     raw_converter_val = settings.raw_cfg('converter')
     raw_has_tokens = (raw_converter_val.find("%") != -1)
-    reserved_names = ['sound_name', 'write_to']
     if raw_has_tokens or settings.optional_bool('dumb_converter_eval'):
-        command = settings.eval_prep('converter', reserved_names)
+        converter_key = 'converter'
     else:
-        command = settings.eval_prep(raw_converter_val, reserved_names)
+        converter_key = raw_converter_val
+    reserved_names = ['sound_name', 'write_to']
+    command = settings.eval_prep(converter_key, reserved_names)
     # Split the command into stages at each pipe symbol; split the stages into
     # stage elements (executable+args) at each comma.
     command_stages = [[a.strip() for a in s.split(",")]
@@ -197,7 +200,7 @@ def make_converter(settings):
         verbose_print("converter stage %d of %d:" % (stage + 1, num_stages))
         stage_args = command_stages[stage]
         verbose_print("    " + " ".join(stage_args))
-        if not valid_command_stage(settings, stage_args,
+        if not valid_command_stage(settings, converter_key, stage_args,
                                    stage == num_stages - 1):
             return None
     # Stages look good, so let's define a converter function to use them!
@@ -251,7 +254,7 @@ def make_converter(settings):
         passthru_filename = None
         p_chain = []
         for stage in range(num_stages):
-            stage_args = [settings.eval_finalize('converter', a, var_table)
+            stage_args = [settings.eval_finalize(converter_key, a, var_table)
                           for a in command_stages[stage]]
             # Use of the %write_to% command makes this the last stage, and
             # means that we won't handle it like other stages.
