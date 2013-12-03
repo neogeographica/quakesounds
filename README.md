@@ -29,7 +29,7 @@ If you are working on Linux or OS X, you probably already have this; if on
 Windows, probably not (unless you've already gone to the trouble of installing
 it yourself). In any case, if you don't have Python then you can [go get a
 Python installer for your platform of choice](http://python.org/download/).
-**Note that you will specifically need Python version 2.6 or 2.7**;
+**Note that you will specifically need Python version 2.6.x or 2.7.x**;
 quakesounds doesn't yet support any other Python versions.
 
 Once you've installed Python, the next issue is whether you need to install
