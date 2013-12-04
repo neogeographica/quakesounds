@@ -140,7 +140,10 @@ should contain several files with the m4r extension; these are noise-reduced,
 gain-normalized, iOS-alert-sound-ready versions of a few selected Quake
 sounds.
 
-Victory! But now let's take a closer look at what is going on there.
+Victory! But now let's take a closer look at what is going on there. If you
+want a different sound selection, or you want the sounds to be louder, or
+softer, or in a different format, or with different names, or changed in any
+other way... hang in there and keep reading.
 
 
 Walkthrough
@@ -231,19 +234,19 @@ permanently by editing the config file and replacing the value of the
 
 You can specify as many settings on the command line as you like. If you like
 the Ogg Vorbis output but want it to be a bit louder, you could override the
-normalized DB setting in the config file (which is -15) like so:
+normalized DB setting in the config file (which is -12) like so:
 
-    .\quakesounds.py converter:ogg norm_db:-12
+    .\quakesounds.py converter:ogg norm_db:-10
 
 And if your pak files were located somewhere else, for example in
 "C:\Quake\id1":
 
-    .\quakesounds.py converter:ogg norm_db:-12 pak_home:C:\Quake\id1
+    .\quakesounds.py converter:ogg norm_db:-10 pak_home:C:\Quake\id1
 
 If you need to work with a setting value that has spaces in it, just put
 quotes around the whole setting:
 
-    .\quakesounds.py converter:ogg norm_db:-12 "pak_home:C:\path with a space"
+    .\quakesounds.py converter:ogg norm_db:-10 "pak_home:C:\path with a space"
 
 Of course if there's a particular setting value that you want to use
 repeatedly, you should just edit that setting's value in the config file.
