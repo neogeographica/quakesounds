@@ -317,17 +317,29 @@ In the default "quakesounds.cfg" file, `norm_db` is one of these additional
 settings used by other settings. `norm_db` is referenced in a setting named
 `sox_norm`, which defines the command-line arguments necessary for gain
 normalization with SoX. The `sox_norm` setting in turn is referenced in every
-converter command definition that uses SoX and does gain normalization.
+converter command definition that uses SoX and does gain normalization. If you
+open up the default config file and search for instances of `norm_db` and
+`sox_norm`, you should get a good idea of how these setting references work.
 
 So by setting a value for `norm_db` you affect any sound conversion that does
 gain normalization. With `norm_db` isolated in this way, gain adjustments are
 simpler to do (especially when doing them on the quakesounds command line).
 
-Other settings referenced in the default config include `sox_path` and
+Another example of how this can be useful: if you're going to want to generate
+sounds at a few different gain settings for testing/comparison, you could
+change the value of the `out_working_dir` setting in the config file so that
+its value references the `norm_db` setting, something like this:
+
+    out_working_dir : quakesounds_out_gain%norm_db%
+
+Then when you run quakesounds using different values for `norm_db`, the
+results will get placed in different directories.
+
+Other settings referenced throughout the default config include `sox_path` and
 `ffmpeg_path`, which define the file paths to those utilities. You may need to
-change their values if you are using external utilities that aren't on your
-executables path, or if you have a quakesounds with bundled internal utilities
-and you want to force it to use external utilities.
+change the values of those settings if you are using external utilities that
+aren't on your executables path, or if you have a quakesounds with bundled
+internal utilities and you want to force it to use external utilities.
 
 And there is nothing sacred about the default collection of available
 `converter` values (passthru, wav, ogg, m4r). When you choose a value for the
