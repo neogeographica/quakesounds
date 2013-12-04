@@ -24,7 +24,6 @@ sound/misc/r_tele4.wav     : quake_tele_4
 sound/misc/r_tele5.wav     : quake_tele_5
 sound/misc/runekey.wav     : quake_key_runic
 sound/misc/secret.wav      : quake_secret
-sound/misc/talk.wav        : quake_talkbeep
 sound/misc/trigger1.wav    : quake_trigger
 sound/player/teledth1.wav  : quake_telefrag
 sound/weapons/pkup.wav     : quake_gun_pickup
