@@ -1,0 +1,22 @@
+# This file should be pointed to by the targets_path setting of the
+# quakesounds configuration. In the default "quakesounds.cfg" file, see
+# the description of targets_path for details of the format for this file.
+
+sound/buttons/airbut1.wav  : quake_button
+sound/buttons/switch02.wav : quake_switch_02
+sound/buttons/switch04.wav : quake_switch_04
+sound/buttons/switch21.wav : quake_switch_21
+sound/items/armor1.wav     : quake_armor
+sound/items/health1.wav    : quake_health_big
+sound/items/itembk2.wav    : quake_item_spawn
+sound/items/r_item1.wav    : quake_health_small
+sound/items/r_item2.wav    : quake_health_mega
+sound/misc/basekey.wav     : quake_key_base
+sound/misc/r_tele1.wav     : quake_tele_1
+sound/misc/r_tele2.wav     : quake_tele_2
+sound/misc/r_tele3.wav     : quake_tele_3
+sound/misc/r_tele4.wav     : quake_tele_4
+sound/misc/r_tele5.wav     : quake_tele_5
+sound/misc/secret.wav      : quake_secret
+sound/player/teledth1.wav  : quake_telefrag
+sound/weapons/pkup.wav     : quake_gun_pickup

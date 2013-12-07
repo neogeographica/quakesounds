@@ -3,3 +3,6 @@
 /util/
 /util_dists/
 /util_staging/
+/quakesounds.cfg
+/quakesounds_out/
+*.pyc

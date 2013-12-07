@@ -1,0 +1,14 @@
+# This file should be pointed to by the targets_path setting of the
+# quakesounds configuration. In the default "quakesounds.cfg" file, see
+# the description of targets_path for details of the format for this file.
+
+# Note that this example specifically lists certain sounds that could benefit
+# from using converters that do noise reduction. See the docs for details.
+
+sound/items/inv1.wav       : quake_invis
+sound/items/inv2.wav       : quake_invis_end
+sound/items/protect.wav    : quake_pent
+sound/items/protect2.wav   : quake_pent_end
+sound/misc/medkey.wav      : quake_key_med
+sound/misc/runekey.wav     : quake_key_runic
+sound/misc/trigger1.wav    : quake_trigger
