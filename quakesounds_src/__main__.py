@@ -51,7 +51,7 @@ import processing
 from util import verbose_print, set_verbosity
 from contextlib import contextmanager
 
-__version__ = "1.0b1"
+__version__ = "1.0"
 
 RES_PATH = "res"
 DEFAULT_CFG = "default.cfg"
