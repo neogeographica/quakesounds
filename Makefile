@@ -50,7 +50,7 @@ extras := LICENSE quakesounds.targets quakesounds_nr.targets README.md LAUNCHING
 
 win_util_dists := $(addprefix util_dists/win/,$(foreach dist,$(addsuffix _win_dist, $(utils)),$($(dist))))
 mac_util_dists := $(addprefix util_dists/mac/,$(foreach dist,$(addsuffix _mac_dist, $(utils)),$($(dist))))
-noarch_util_dists :=
+lightweight_util_dists :=
 
 util_dists_readme :=\
 This distribution of quakesounds has one or more internally bundled sound\
@@ -135,7 +135,7 @@ build/quakesounds_$(version)_%.zip: build/quakesounds_$(version)_%.py $(extras) 
 	@cd build; mv quakesounds_$(version)_$*.py quakesounds.py; $(zip) quakesounds_$(version)_$*.zip $(extras) util_dists_info/* quakesounds.py
 	@cd build; rm -rf $(extras) util_dists_info quakesounds.py
 
-all: build/quakesounds_$(version)_noarch.zip build/quakesounds_$(version)_win.zip build/quakesounds_$(version)_mac.zip
+all: build/quakesounds_$(version)_lightweight.zip build/quakesounds_$(version)_win.zip build/quakesounds_$(version)_mac.zip
 
 clean:
 	rm -rf build
