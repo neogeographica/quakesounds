@@ -91,8 +91,8 @@ running. It is a directory that will be deleted, along with its contents, when
 quakesounds exits. When quakesounds starts, this directory is populated with
 the following files:
 
-  * A SoX noise-reduction profile useful for Quake sounds is made available as
-  `%qs_internal%noiseprofile`
+  * A SoX noise-reduction profile possibly useful for Quake sounds is made
+  available as `%qs_internal%noiseprofile`
 
   * If your version of quakesounds is bundled with the SoX utility included,
   that utility is made available as `%qs_internal%sox`

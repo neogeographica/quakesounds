@@ -20,6 +20,12 @@ ringtones, it's also data-driven to the point where you could use it to apply
 an arbitrary processing pipeline, using any external utilities that you like,
 to anything contained in a pak file.
 
+If you have good chops with audio processing tools like SoX and ffmpeg, and
+you have suggestions on how to improve the default settings or add new example
+conversion pipelines, please share! You can find my email address in the page
+footer of neogeographica.com, or post an issue on the GitHub repo, track me
+down on a forum, whatever.
+
 
 Prerequisites
 -------------
@@ -131,12 +137,12 @@ LAUNCHING.md).
 
 6. Copy your "pak0.pak" and "pak1.pak" files into that same directory.
 
-7. Run quakesounds again. (You may see a couple of warnings about "clipping";
-this is expected. If you see a *lot* of warnings, your version of the SoX
-utility may be old.)
+7. Run quakesounds again. (You may see a warning or two about "clipping"; this
+is expected. If you see a *lot* of warnings, your version of the SoX utility
+may be old.)
 
 8. You should see a "quakesounds_out" subdirectory appear. "quakesounds_out"
-should contain several files with the m4r extension; these are noise-reduced,
+should contain several files with the m4r extension; these are
 gain-normalized, iOS-alert-sound-ready versions of a few selected Quake
 sounds.
 
@@ -252,6 +258,28 @@ Of course if there's a particular setting value that you want to use
 repeatedly, you should just edit that setting's value in the config file.
 (No quote marks required for values in the config file BTW.)
 
+For some final examples, let's talk about noise reduction. Several of the
+Quake sounds have noticeable background hiss. I've experimented with applying
+noise reduction using a noise profile taken from the end of
+sound/misc/runekey.wav; on some sounds it can help, although on many others
+it distorts the opening "attack" of the sound too much.
+
+So in the default config for this release, there are two different sets of
+converter commands: those that include noise reduction, and those that don't.
+The examples above haven't been using any converters that do noise reduction.
+There's also a separate example targets file "quakesounds_nr.targets" that
+selects a few sounds that benefit from noise reduction. You could create
+noise-reduced m4r files from that set of sounds like this:
+
+    .\quakesounds.py converter:m4r_nr targets_path:quakesounds_nr.targets
+
+Or some noise-reduced ogg files:
+
+    .\quakesounds.py converter:ogg_nr targets_path:quakesounds_nr.targets
+
+This is one area where some expert help could probably improve the default
+configuration quite a bit.
+
 
 Customizing
 -----------
@@ -267,19 +295,25 @@ values either in the config file or on the command line. These settings are
 the comments in the default "quakesounds.cfg" file, in the "REQUIRED SETTINGS"
 section, but here's the gist:
 
-If you're using the default "quakesounds.cfg", there are four legal values
+If you're using the default "quakesounds.cfg", there are seven legal values
 for the `converter` setting:
 
 * passthru : This extracts the sound file without making any changes.
 
-* wav : This keeps the sound file as a WAV file but performs noise reduction
-and gain normalization.
+* wav : This keeps the sound file as a WAV file but performs gain
+normalization.
 
-* ogg : Along with noise reduction and gain normalization, this converts the
-sound file to Ogg Vorbis format.
+* wav_nr : As above, plus noise reduction.
 
-* m4r : Along with noise reduction and gain normalization, this converts the
-sound file to M4A format, and gives it the iOS-expected m4r file extension.
+* ogg : Along with gain normalization, this converts the sound file to Ogg
+Vorbis format.
+
+* ogg_nr : As above, plus noise reduction.
+
+* m4r : Along with gain normalization, this converts the sound file to M4A
+format, and gives it the iOS-expected m4r file extension.
+
+* m4r_nr : As above, plus noise reduction.
 
 It's possible to do other types of conversions though; more about that soon.
 
@@ -345,15 +379,15 @@ aren't on your executables path, or if you have a quakesounds with bundled
 internal utilities and you want to force it to use external utilities.
 
 And there is nothing sacred about the default collection of available
-`converter` values (passthru, wav, ogg, m4r). When you choose a value for the
-`converter` setting, you are just naming any other setting. That other
-setting's value must define which utility or utilities to launch for
-processing sound data, and what arguments to use.
+`converter` values (passthru, wav, wav_nr, ogg, ogg_nr, m4r, m4r_nr). When you
+choose a value for the `converter` setting, you are just naming any other
+setting. That other setting's value must define which utility or utilities to
+launch for processing sound data, and what arguments to use.
 
 So you can examine the current definitions of the `passthru`, `wav`, `ogg`,
-and `m4r` settings to see exactly what they are doing to the sound data. You
-can edit the definitions of those settings to change the arguments used when
-invoking the sound utilities.
+and etc. settings to see exactly what they are doing to the sound data. You
+can edit the definitions of those settings (and the settings they reference)
+to change the arguments used when invoking the sound utilities.
 
 You could also add a new setting containing a definition of an entirely
 different sound processing pipeline, using whatever new setting name you like.

@@ -46,7 +46,7 @@ sox_mac_txt := sox: SoX 32-bit version 14.4.1 for OS X, from sox.sourceforge.net
 
 sources := $(shell find quakesounds_src -type f)
 
-extras := LICENSE quakesounds.targets README.md LAUNCHING.md CONFIGURING.md
+extras := LICENSE quakesounds.targets quakesounds_nr.targets README.md LAUNCHING.md CONFIGURING.md
 
 win_util_dists := $(addprefix util_dists/win/,$(foreach dist,$(addsuffix _win_dist, $(utils)),$($(dist))))
 mac_util_dists := $(addprefix util_dists/mac/,$(foreach dist,$(addsuffix _mac_dist, $(utils)),$($(dist))))
