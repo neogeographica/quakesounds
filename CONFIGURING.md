@@ -95,10 +95,12 @@ the following files:
   available as `%qs_internal%noiseprofile`
 
   * If your version of quakesounds is bundled with the SoX utility included,
-  that utility is made available as `%qs_internal%sox`
+  that utility is made available as `%qs_internal%sox` (or as
+  `%qs_internal%sox.exe` on Windows)
 
   * If your version of quakesounds is bundled with the ffmpeg utility
-  included, that utility is made available as `%qs_internal%ffmpeg`
+  included, that utility is made available as `%qs_internal%ffmpeg` (or as
+  `%qs_internal%ffmpeg.exe` on Windows)
 
 * `%percent%` will resolve to the "%"" character.
 
