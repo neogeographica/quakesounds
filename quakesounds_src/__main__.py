@@ -128,7 +128,11 @@ def optional_pause_on_exit():
 
     """
     if pause_on_exit:
-        raw_input("Press Enter to finish: ")
+        prompt = "Press Enter to finish: "
+        try:
+            raw_input(prompt)
+        except NameError:
+            input(prompt)
 
 def user_temp_dir(cfg_table, path_table):
     """Return the user-specified temp directory, if any.
