@@ -80,9 +80,9 @@ def temp_copies(res_path, temp_dir=None):
             resource_path = "/".join([res_path, resource])
             # Easier to just deal with a flat file layout, no further subdirs.
             if resource_isdir(__name__, resource_path):
-                sys.stderr.write("skipping internal resource %s "
-                                 "(resource subdirectories not supported)\n" %
-                                 resource_path)
+                sys.stderr.write("skipping internal resource {0} "
+                                 "(resource subdirectories not supported)\n".format(
+                    resource_path))
                 continue
             # The resource stream won't be a file object (in zipped app case),
             # so we have to wrap it in the "closing" context mgr to close it

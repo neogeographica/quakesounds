@@ -233,13 +233,13 @@ def create_config_file(cfg_path, resource_dir):
             with out_fd_if_not_exist(cfg_path) as out_fd:
                 os.write(out_fd, cfg)
     except OSError as e:
-        sys.stderr.write("Unable to create default config file at %s\n" %
-                         cfg_path)
+        sys.stderr.write("Unable to create default config file at {0}\n".format(
+            cfg_path))
         if e.errno != errno.EEXIST:
             raise
         sys.stderr.write("File already exists at that path.\n")
         return False
-    print("Default config file created at %s" % cfg_path)
+    print("Default config file created at {0}".format(cfg_path))
     return True
 
 def print_qs_info(resource_dir):
@@ -253,7 +253,7 @@ def print_qs_info(resource_dir):
     :type resource_dir:  str
 
     """
-    print("\n* quakesounds version %s *\n" % __version__)
+    print("\n* quakesounds version {0} *\n".format(__version__))
     info_files = glob.glob(os.path.join(resource_dir, "*_info.txt"))
     info = ""
     for path in info_files:
@@ -275,12 +275,12 @@ def print_modules_info():
     """
     verbose_print("Modules used:")
     if processing.expak_source == "system":
-        verbose_print("    expak: from system library (version %s)" %
-                      processing.expak_version)
+        verbose_print("    expak: from system library (version {0})".format(
+            processing.expak_version))
     else:
         verbose_print("    expak: not found in system library; "
-                      "using bundled (version %s)" %
-                      processing.expak_version)
+                      "using bundled (version {0})".format(
+            processing.expak_version))
     if resources.pkg_resources_source == "system":
         verbose_print("    pkg_resources: from system library")
     else:
@@ -381,11 +381,11 @@ def main(argv):
         targets_table = config.read_cfg(targets_path, default_sound_name)
         if not targets_table:
             if os.path.exists(targets_path):
-                print("Nothing to process in the targets table at path: %s" %
-                      targets_path)
+                print("Nothing to process in the targets table at path: {0}".format(
+                    targets_path))
                 return 0
             else:
-                print("No targets table found at path: %s" % targets_path)
+                print("No targets table found at path: {0}".format(targets_path))
                 return 1
 
         # Do that voodoo that we do.
@@ -396,7 +396,7 @@ def main(argv):
         if targets_table:
             print("Not processed:")
             for t in targets_table:
-                print("    %s" % t)
+                print("    {0}".format(t))
         else:
             print("All selections processed.")
         print("")
