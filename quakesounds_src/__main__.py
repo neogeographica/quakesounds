@@ -235,7 +235,7 @@ def create_config_file(cfg_path, resource_dir):
             default_cfg = instream.read()
             cfg = UTILITY_PATH_RE.sub(utility_path, default_cfg)
             with out_fd_if_not_exist(cfg_path) as out_fd:
-                os.write(out_fd, cfg)
+                os.write(out_fd, cfg.encode('utf-8'))
     except OSError as e:
         sys.stderr.write("Unable to create default config file at {0}\n".format(
             cfg_path))
