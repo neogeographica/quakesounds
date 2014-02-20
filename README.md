@@ -1,7 +1,7 @@
 quakesounds: audio processing pipeline for Quake sound samples
 ==============================================================
 
-**Current release:** [1.0](https://github.com/neogeographica/quakesounds/releases)
+**Current release:** [1.1](https://github.com/neogeographica/quakesounds/releases)
 
 quakesounds is a utility for easily ripping sounds out of Quake pak files and
 pushing them through a sequence of audio processing effects.
