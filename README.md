@@ -30,13 +30,15 @@ down on a forum, whatever.
 Prerequisites
 -------------
 
-You'll need to have Python 2.6 or 2.7 installed in order to run quakesounds.
-If you are working on Linux or OS X, you probably already have this; if on
-Windows, probably not (unless you've already gone to the trouble of installing
-it yourself). In any case, if you don't have Python then you can [go get a
-Python installer for your platform of choice](http://python.org/download/).
-**Note that you will specifically need Python version 2.6.x or 2.7.x**;
-quakesounds doesn't yet support any other Python versions.
+You'll need to have Python 2.6, 2.7, or 3.x installed in order to run
+quakesounds. If you are working on Linux or OS X, you probably already have
+this; if on Windows, probably not (unless you've already gone to the trouble
+of installing it yourself). In any case, if you don't have Python then you can
+[go get a Python installer for your platform of choice](http://python.org/download/).
+The latest stable version of either Python 2 or Python 3 will work... if you're
+new to Python, you should look elsewhere for advice on whether to use 2 or 3,
+but the general consideration is that currently more stuff is compatible with
+Python 2.
 
 Once you've installed Python, the next issue is whether you need to install
 any sound-processing utilities for quakesounds to control. All of the default
@@ -70,12 +72,12 @@ Choosing your quakesounds flavor
 You can get a quakesounds distribution at the [quakesounds releases page on
 GitHub](https://github.com/neogeographica/quakesounds/releases).
 
-quakesounds is a Python 2.6/2.7 application, so it will run on any system that
-has the necessary Python version. As mentioned above though, you can choose to
-download a build of quakesounds that has internally-bundled sound utilities
-for convenience. Those utilities are built specifically for OS X or for
-Windows, so that's why there are unique quakesounds download options for OS X
-and for Windows.
+quakesounds is a Python application, so it will run on any system that has a
+compatible version of Python (2.6, 2.7, or 3.x). As mentioned above though, you
+can choose to download a build of quakesounds that has internally-bundled sound
+utilities for convenience. Those utilities are built specifically for OS X or
+for Windows, so that's why there are unique quakesounds download options for
+OS X and for Windows.
 
 To be clear: the quakesounds application itself will still run on any platform,
 regardless of which flavor you download. You can change the configuration so
