@@ -155,10 +155,10 @@ class TooManySubstitutions(Exception):
         :rtype:   str
 
         """
-        return ("evaluation of setting '%s' "
-                "has gone through %d token substitution passes "
-                "without completely resolving; current value: %s" %
-                (self.context_key, self.max_depth, self.value))
+        return ("evaluation of setting '{0}' "
+                "has gone through {1} token substitution passes "
+                "without completely resolving; current value: {2}".format(
+            self.context_key, self.max_depth, self.value))
 
 class BadSetting(Exception):
     """Exception for signaling that a key lookup has failed.
@@ -191,11 +191,11 @@ class BadSetting(Exception):
 
         """
         if not self.context_key:
-            return ("required setting '%s' is undefined" % self.key)
+            return ("required setting '{0}' is undefined".format(self.key))
         else:
-            return ("setting '%s' is undefined or used in an illegal context "
-                    "when evaluating content of setting '%s': %s" %
-                    (self.key, self.context_key, self.context_value))
+            return ("setting '{0}' is undefined or used in an illegal context "
+                    "when evaluating content of setting '{1}': {2}".format(
+                self.key, self.context_key, self.context_value))
 
 class Settings:
     """Encapsulate config properties and methods for evaluating them.

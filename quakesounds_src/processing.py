@@ -197,7 +197,7 @@ def make_converter(settings):
     # Validate.
     num_stages = len(command_stages)
     for stage in range(num_stages):
-        verbose_print("converter stage %d of %d:" % (stage + 1, num_stages))
+        verbose_print("converter stage {0} of {1}:".format(stage + 1, num_stages))
         stage_args = command_stages[stage]
         verbose_print("    " + " ".join(stage_args))
         if not valid_command_stage(settings, converter_key, stage_args,
@@ -350,7 +350,7 @@ def go(settings, targets_table):
     # Process each pak file.
     for path in abs_pak_paths:
         verbose_print("")
-        verbose_print("reading pak file %s..." % path)
+        verbose_print("reading pak file {0}...".format(path))
         expak.process_resources(path, converter, targets_table)
     verbose_print("")
     return True
