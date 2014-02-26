@@ -55,24 +55,24 @@ except ImportError:
 
 
 @contextmanager
-def temp_copies(res_path, temp_dir=None):
+def temp_copies(res_path, root_temp_dir=None):
     """Context manager to extract and clean up internally bundled resources.
 
     Make a temporary directory to hold the resources. Extract them there and
     set each resource file's mode to be readable, writable, & executable. On
     scope exit delete that temp directory and all its contents.
 
-    :param res_path: resource path within this application bundle
-    :type res_path:  str
-    :param temp_dir: directory where the new temporary directory should be
-                     created, or None to use some system-standard location
-    :type temp_dir:  str or None
+    :param res_path:      resource path within this application bundle
+    :type res_path:       str
+    :param root_temp_dir: directory where the new temporary directory should
+                          be created, or None to use system-standard location
+    :type root_temp_dir:  str or None
 
     :returns: path to the created temporary directory
     :rtype:   str
 
     """
-    temp_dir = tempfile.mkdtemp(dir=temp_dir)
+    temp_dir = tempfile.mkdtemp(dir=root_temp_dir)
     try:
         for resource in resource_listdir(__name__, res_path):
             if not resource: # sometimes can have emptystring in this list?
