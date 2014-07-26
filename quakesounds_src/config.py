@@ -173,10 +173,11 @@ class BadSetting(Exception):
         :param context_key:   key for the value that contained a token
                               reference to the failed key, or None if the
                               failed key was the initial lookup
-        :type context_key:    str
+        :type context_key:    str or None
         :param context_value: value that contained a token reference to the
                               failed key, or None if the failed key was the
                               initial lookup
+        :type context_value:  str or None
 
         """
         self.key = key
